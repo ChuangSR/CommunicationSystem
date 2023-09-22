@@ -14,38 +14,39 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         //关闭dos回显
-//        DosUtil.exec("@echo off");
-//        client = new Client();
-//
-//        while (true){
-//            System.out.println("===============菜单================");
-//            System.out.println("=           1  登录               =");
-//            System.out.println("=           2  退出               =");
-//            System.out.println("==================================");
-//            System.out.println("请输入");
-//            int choose = scanner.nextInt();
-//            if (choose == 1){
-//                login();
-//            }else if (choose ==2){
-//                exit();
-//            }else {
-//                inputError();
-//            }
-//        }
-        MessageDatabaseBean bean = new MessageDatabaseBean("服务器","客户端","你好","2022.09.01","message");
-        SqlSession sqlSession = SqlUtil.getSqlSession();
-        sqlSession.insert("insert_data",bean);
-        sqlSession.commit();
-        sqlSession.close();
+        client = new Client();
+
+        while (true){
+            System.out.println("===============菜单================");
+            System.out.println("=           1  登录               =");
+            System.out.println("=           2  退出               =");
+            System.out.println("==================================");
+            System.out.println("请输入");
+            int choose = scanner.nextInt();
+            if (choose == 1){
+                login();
+            }else if (choose ==2){
+                exit();
+            }else {
+                inputError();
+            }
+        }
     }
 
-    public static void login(){
+    public static void login() throws IOException {
         System.out.println("==================================");
         System.out.print("请输入账号：");
         String account = scanner.next();
         System.out.print("请输入密码：");
         String password = scanner.next();
+        boolean status = client.login(account, password);
+        if (status){
+
+        }
+        return;
     }
+
+    public static void menu(){}
 
     public static void inputError() throws IOException {
 //        String[] commands = {"cls","color red","echo 输入异常"};
