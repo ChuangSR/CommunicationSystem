@@ -1,7 +1,10 @@
 package com.cc68;
 
-import com.cc68.message.ReceiveManager;
-import com.cc68.message.SendManager;
+
+import com.cc68.beans.MessageBean;
+import com.cc68.manager.ReceiveManager;
+import com.cc68.manager.SendManager;
+import com.cc68.utils.MessageBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,10 +34,10 @@ public class Client {
         return config;
     }
     public boolean login(String account,String password) throws IOException {
-
-        sendManager.sendAccountAndpassword(account,password);
-        receiveManager = new ReceiveManager(socket);
-        receiveManager.run();
+        config.setProperty("account",account);
+        String[] data = {account,MessageBuilder.getMD5(password)};
+        MessageBean bean = MessageBuilder.buildMessage("login", data, account);
+        sendManager.send(bean);
 
         return false;
     }

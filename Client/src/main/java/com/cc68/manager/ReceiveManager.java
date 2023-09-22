@@ -1,4 +1,6 @@
-package com.cc68.message;
+package com.cc68.manager;
+
+import com.cc68.message.MessagePair;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,7 +27,7 @@ public class ReceiveManager implements Runnable{
             String message = null;
             while (flage&&(message = reader.readLine())!=null){
                 if (message.indexOf("服务器")==0){
-                    messagePair.setReply(message);
+//                    messagePair.setReply(message);
                 }
                 System.out.println(message);
             }

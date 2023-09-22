@@ -1,10 +1,14 @@
-package com.cc68.message;
+package com.cc68.manager;
+
+import com.alibaba.fastjson2.JSON;
+import com.cc68.beans.MessageBean;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.HashMap;
 
 public class SendManager {
     private Socket socket;
@@ -16,14 +20,14 @@ public class SendManager {
 
     }
 
-    public void send(String message) throws IOException {
-        writer.write(message);
+    public void send(MessageBean bean) throws IOException {
+        String data = JSON.toJSONString(bean);
+        writer.write(data);
         writer.write("\n");
         writer.flush();
     }
 
-    public void sendAccountAndpassword(String account,String password) throws IOException {
-        send(account);
-        send(Integer.toString(password.hashCode()));
+    public void close() throws IOException {
+        writer.close();
     }
 }

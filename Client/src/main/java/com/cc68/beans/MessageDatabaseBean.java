@@ -1,6 +1,6 @@
-package com.cc68.message;
+package com.cc68.beans;
 
-public class MassageBean {
+public class MessageDatabaseBean {
     private String originator;
 
     private String receiver;
@@ -11,9 +11,9 @@ public class MassageBean {
 
     private String type;
 
-    public MassageBean(){}
+    public MessageDatabaseBean(){}
 
-    public MassageBean(String originator, String receiver, String message, String time, String type) {
+    public MessageDatabaseBean(String originator, String receiver, String message, String time, String type) {
         this.originator = originator;
         this.receiver = receiver;
         this.message = message;

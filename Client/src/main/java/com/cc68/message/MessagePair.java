@@ -1,5 +1,7 @@
 package com.cc68.message;
 
+import com.cc68.beans.MessageBean;
+
 /**
  * 用于存储一个消息对
  * 即，客户端的发出和服务器的回复
@@ -10,25 +12,41 @@ public class MessagePair {
 
     private String receiver;
 
-    private String send;
+    private MessageBean send;
 
-    private String reply;
+    private MessageBean reply;
 
     public MessagePair(){}
 
-    public String getSend() {
+    public String getOriginator() {
+        return originator;
+    }
+
+    public void setOriginator(String originator) {
+        this.originator = originator;
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
+
+    public MessageBean getSend() {
         return send;
     }
 
-    public void setSend(String send) {
+    public void setSend(MessageBean send) {
         this.send = send;
     }
 
-    public String getReply() {
+    public MessageBean getReply() {
         return reply;
     }
 
-    public void setReply(String reply) {
+    public void setReply(MessageBean reply) {
         this.reply = reply;
     }
 }
