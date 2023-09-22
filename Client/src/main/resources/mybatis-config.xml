@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--    SLF4J、LOG4J、LOG4J2、JDK_LOGGING、COMMONS_LOGGING、STDOUT_LOGGING、NO_LOGGING-->
+        <properties resource="config.properties"/>
+        <settings>
+            <setting name="logImpl" value="STDOUT_LOGGING"/>
+        </settings>
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="jdbc.driver"/>
+                <property name="url" value="jdbc.url"/>
+                <property name="poolMaximumActiveConnections" value="3"/>
+                <property name="poolTimeToWait" value="2000"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <mappers>
+        <!--mapper文件的路径，默认从类的根目录开始-->
+        <mapper resource="CarMapper.xml"/>
+    </mappers>
+</configuration>

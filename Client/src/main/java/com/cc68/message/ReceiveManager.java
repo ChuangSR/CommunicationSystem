@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-public class ListenServer implements Runnable{
+public class ReceiveManager implements Runnable{
     private Socket socket;
     private BufferedReader reader;
 
@@ -14,7 +14,7 @@ public class ListenServer implements Runnable{
     //用于存储服务器对于消息的回复，普通的消息将不会被存储
     private MessagePair messagePair;
 
-    public ListenServer(Socket socket) throws IOException {
+    public ReceiveManager(Socket socket) throws IOException {
         this.socket = socket;
         reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     }

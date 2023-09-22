@@ -1,6 +1,6 @@
 package com.cc68;
 
-import com.cc68.message.ListenServer;
+import com.cc68.message.ReceiveManager;
 import com.cc68.message.SendManager;
 
 import java.io.IOException;
@@ -12,8 +12,9 @@ public class Client {
     private Socket socket;
     private Properties config;
 
-    private ListenServer listenServer;
+    private ReceiveManager receiveManager;
 
+    //ReceiveManager
     private SendManager sendManager;
 
     public Client() throws IOException {
@@ -32,8 +33,8 @@ public class Client {
     public boolean login(String account,String password) throws IOException {
 
         sendManager.sendAccountAndpassword(account,password);
-        listenServer = new ListenServer(socket);
-        listenServer.run();
+        receiveManager = new ReceiveManager(socket);
+        receiveManager.run();
 
         return false;
     }

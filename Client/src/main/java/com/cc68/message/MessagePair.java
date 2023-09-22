@@ -5,6 +5,11 @@ package com.cc68.message;
  * 即，客户端的发出和服务器的回复
  */
 public class MessagePair {
+    //消息的发起人
+    private String originator;
+
+    private String receiver;
+
     private String send;
 
     private String reply;
