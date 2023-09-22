@@ -14,4 +14,8 @@
     <select id="se">
         select * from messages;
     </select>
+
+    <insert id="insert_data">
+        insert into messages values (#{originator},#{receiver},#{message},#{time},#{type});
+    </insert>
 </mapper>

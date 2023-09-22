@@ -4,7 +4,7 @@ package com.cc68;
 import com.cc68.beans.MessageBean;
 import com.cc68.manager.ReceiveManager;
 import com.cc68.manager.SendManager;
-import com.cc68.utils.MessageBuilder;
+import com.cc68.utils.MessageUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,6 +20,38 @@ public class Client {
     //ReceiveManager
     private SendManager sendManager;
 
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+
+    public Properties getConfig() {
+        return config;
+    }
+
+    public void setConfig(Properties config) {
+        this.config = config;
+    }
+
+    public ReceiveManager getReceiveManager() {
+        return receiveManager;
+    }
+
+    public void setReceiveManager(ReceiveManager receiveManager) {
+        this.receiveManager = receiveManager;
+    }
+
+    public SendManager getSendManager() {
+        return sendManager;
+    }
+
+    public void setSendManager(SendManager sendManager) {
+        this.sendManager = sendManager;
+    }
+
     public Client() throws IOException {
         config = readConfig();
         socket = new Socket(config.getProperty("ServerHost"),
@@ -34,11 +66,27 @@ public class Client {
         return config;
     }
     public boolean login(String account,String password) throws IOException {
+        boolean flage = false;
+        //存储账户名
         config.setProperty("account",account);
-        String[] data = {account,MessageBuilder.getMD5(password)};
-        MessageBean bean = MessageBuilder.buildMessage("login", data, account);
+        //构建需要发送的数据
+        String[] data = {account, MessageUtil.getMD5(password)};
+        MessageBean bean = MessageUtil.buildMessage("login", data, account);
+        //发送数据
         sendManager.send(bean);
-
-        return false;
+        //构建接收器
+        receiveManager = new ReceiveManager(socket,this);
+        //监听服务器对登录消息的返回
+        MessageBean receive = receiveManager.getReceive(bean.getID());
+        String status = receive.getData().get("status");
+        if ("successful login".equals(status)){
+            System.out.println("登录成功");
+            flage = true;
+        }else if ("failed login".equals(status)){
+            System.out.println("账户或者密码错误");
+        }else {
+            System.out.println("未知异常");
+        }
+        return flage;
     }
 }

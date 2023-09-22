@@ -1,5 +1,8 @@
 package com.cc68.beans;
 
+/**
+ * 存储数据库数据的类
+ */
 public class MessageDatabaseBean {
     private String originator;
 

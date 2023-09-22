@@ -1,6 +1,9 @@
 package com.cc68;
 
+import com.cc68.beans.MessageDatabaseBean;
 import com.cc68.utils.DosUtil;
+import com.cc68.utils.SqlUtil;
+import org.apache.ibatis.session.SqlSession;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -12,23 +15,28 @@ public class Main {
     public static void main(String[] args) throws IOException {
         //关闭dos回显
 //        DosUtil.exec("@echo off");
-        client = new Client();
-
-        while (true){
-            System.out.println("===============菜单================");
-            System.out.println("=           1  登录               =");
-            System.out.println("=           2  退出               =");
-            System.out.println("==================================");
-            System.out.println("请输入");
-            int choose = scanner.nextInt();
-            if (choose == 1){
-                login();
-            }else if (choose ==2){
-                exit();
-            }else {
-                inputError();
-            }
-        }
+//        client = new Client();
+//
+//        while (true){
+//            System.out.println("===============菜单================");
+//            System.out.println("=           1  登录               =");
+//            System.out.println("=           2  退出               =");
+//            System.out.println("==================================");
+//            System.out.println("请输入");
+//            int choose = scanner.nextInt();
+//            if (choose == 1){
+//                login();
+//            }else if (choose ==2){
+//                exit();
+//            }else {
+//                inputError();
+//            }
+//        }
+        MessageDatabaseBean bean = new MessageDatabaseBean("服务器","客户端","你好","2022.09.01","message");
+        SqlSession sqlSession = SqlUtil.getSqlSession();
+        sqlSession.insert("insert_data",bean);
+        sqlSession.commit();
+        sqlSession.close();
     }
 
     public static void login(){

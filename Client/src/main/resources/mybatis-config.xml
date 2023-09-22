@@ -13,8 +13,8 @@
         <environment id="development">
             <transactionManager type="JDBC"/>
             <dataSource type="POOLED">
-                <property name="driver" value="jdbc.driver"/>
-                <property name="url" value="jdbc.url"/>
+                <property name="driver" value="${jdbc.driver}"/>
+                <property name="url" value="${jdbc.url}"/>
                 <property name="poolMaximumActiveConnections" value="3"/>
                 <property name="poolTimeToWait" value="2000"/>
             </dataSource>
@@ -22,6 +22,6 @@
     </environments>
     <mappers>
         <!--mapper文件的路径，默认从类的根目录开始-->
-        <mapper resource="CarMapper.xml"/>
+        <mapper resource="MessageMapper.xml"/>
     </mappers>
 </configuration>

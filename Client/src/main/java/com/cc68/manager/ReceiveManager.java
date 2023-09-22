@@ -1,6 +1,13 @@
 package com.cc68.manager;
 
+import com.alibaba.fastjson2.JSON;
+import com.cc68.Client;
+import com.cc68.beans.MessageBean;
+import com.cc68.beans.MessageDatabaseBean;
 import com.cc68.message.MessagePair;
+import com.cc68.utils.MessageUtil;
+import com.cc68.utils.SqlUtil;
+import org.apache.ibatis.session.SqlSession;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,6 +15,7 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 public class ReceiveManager implements Runnable{
+    private Client client;
     private Socket socket;
     private BufferedReader reader;
 
@@ -16,9 +24,10 @@ public class ReceiveManager implements Runnable{
     //用于存储服务器对于消息的回复，普通的消息将不会被存储
     private MessagePair messagePair;
 
-    public ReceiveManager(Socket socket) throws IOException {
+    public ReceiveManager(Socket socket,Client client) throws IOException {
         this.socket = socket;
         reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        this.client = client;
     }
 
     @Override
@@ -26,17 +35,43 @@ public class ReceiveManager implements Runnable{
         try {
             String message = null;
             while (flage&&(message = reader.readLine())!=null){
-                if (message.indexOf("服务器")==0){
-//                    messagePair.setReply(message);
-                }
+                //存储数据到数据库
+                MessageBean bean = JSON.parseObject(message, MessageBean.class);
+                MessageUtil.saveMessage(bean, client.getConfig().get("account").toString());
+                //向控制台发送数据
                 System.out.println(message);
             }
+            reader.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void exit(){
+    /**
+     * 一个通过id获取数据的函数
+     * @param ID 需要数据的id
+     * @return
+     */
+    public MessageBean getReceive(String ID){
+        String message = null;
+        try {
+            message = reader.readLine();
+            MessageBean bean = JSON.parseObject(message, MessageBean.class);
+            if (ID.equals(bean.getID())){
+                //返回需要的数据
+                return bean;
+            }else {
+                //在非需要的消息的情况下存储消息
+                MessageUtil.saveMessage(bean, client.getConfig().get("account").toString());
+                getReceive(ID);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+    public void close(){
         flage = false;
     }
 }
