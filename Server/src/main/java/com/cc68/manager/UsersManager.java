@@ -2,6 +2,7 @@ package com.cc68.manager;
 
 import com.cc68.beans.UserBean;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -30,6 +31,15 @@ public class UsersManager {
         return reply;
     }
 
+    public ArrayList<UserBean> getAll(){
+        return beans;
+    }
+
+    public void deleteUser( UserBean bean) throws IOException {
+        bean.close();
+        beans.remove(bean);
+        online--;
+    }
     public int getOnline(){
         return online;
     }

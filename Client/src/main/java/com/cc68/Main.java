@@ -21,7 +21,7 @@ public class Main {
             System.out.println("=           1  登录               =");
             System.out.println("=           2  退出               =");
             System.out.println("==================================");
-            System.out.println("请输入");
+            System.out.print("请输入:");
             int choose = scanner.nextInt();
             if (choose == 1){
                 login();

@@ -14,12 +14,15 @@ public class UserBean {
     private SendManager sendManager;
 
 
+    private long heartbeat;
+
 
     public UserBean(){}
 
     public UserBean(String account, String passwowrd) {
         this.account = account;
         this.password = passwowrd;
+        heartbeat = System.currentTimeMillis()/1000;
     }
 
     public Socket getSocket() {
@@ -58,5 +61,13 @@ public class UserBean {
     public void close() throws IOException {
         sendManager.close();
         socket.close();
+    }
+
+    public long getHeartbeat() {
+        return heartbeat;
+    }
+
+    public void refresh(){
+        heartbeat = System.currentTimeMillis()/1000;
     }
 }

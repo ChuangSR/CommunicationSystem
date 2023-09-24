@@ -2,8 +2,10 @@ package com.cc68;
 
 import com.cc68.beans.MessageBean;
 import com.cc68.beans.UserBean;
+import com.cc68.manager.HeartbeatManger;
 import com.cc68.manager.ReceiveManager;
 import com.cc68.manager.UsersManager;
+import com.cc68.manager.Wrecker;
 import org.apache.ibatis.io.Resources;
 
 import java.io.IOException;
@@ -12,9 +14,7 @@ import java.util.HashMap;
 import java.util.Properties;
 
 public class Server {
-    private ServerSocket server;
     //服务器的基本配置
-
     private Properties config;
 
 
@@ -23,14 +23,13 @@ public class Server {
     private ReceiveManager receiveManager;
 
 
-    private boolean flage = true;
-    public ServerSocket getServer() {
-        return server;
-    }
+    private HeartbeatManger heartbeatManger;
 
-    public void setServer(ServerSocket server) {
-        this.server = server;
-    }
+
+    private Wrecker wrecker;
+
+
+    private boolean flage = true;
 
     public Properties getConfig() {
         return config;
@@ -51,9 +50,16 @@ public class Server {
     public Server() throws IOException {
         this.config = Resources.getResourceAsProperties("config.properties");
         usersManager = new UsersManager();
-        server = new ServerSocket(Integer.parseInt(config.getProperty("port")));
-        receiveManager = new ReceiveManager(this);
+        receiveManager = new ReceiveManager(config,"serverPort");
+        heartbeatManger = new HeartbeatManger(config,usersManager);
+        wrecker = new Wrecker(usersManager,config);
 
+
+        Thread heartThread = new Thread(heartbeatManger);
+        heartThread.start();
+
+        Thread wreckerThread = new Thread(wrecker);
+        wreckerThread.start();
     }
 
     public void start() throws IOException {

@@ -8,6 +8,8 @@ import org.apache.ibatis.session.SqlSession;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 public class MessageUtil {
@@ -101,5 +103,12 @@ public class MessageUtil {
         session.insert("insert_data",mdbean);
         session.commit();
         session.close();
+    }
+
+
+    public static String getTime(){
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        Date date = new Date(System.currentTimeMillis());
+        return date.toString();
     }
 }

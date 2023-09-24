@@ -79,6 +79,8 @@ public class Client {
         if ("successful login".equals(status)){
             System.out.println("登录成功");
             flage = true;
+            Thread thread = new Thread(receiveManager);
+            thread.start();
         }else if ("failed login".equals(status)){
             System.out.println("账户或者密码错误");
             close();
