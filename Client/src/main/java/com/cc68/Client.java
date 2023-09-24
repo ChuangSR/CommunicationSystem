@@ -8,7 +8,6 @@ import com.cc68.utils.MessageUtil;
 import org.apache.ibatis.io.Resources;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.Socket;
 import java.util.Properties;
 
@@ -55,12 +54,15 @@ public class Client {
 
     public Client() throws IOException {
         config = Resources.getResourceAsProperties("config.properties");
-        socket = new Socket(config.getProperty("ServerHost"),
-                Integer.parseInt(config.getProperty("ServerPort")));
-        sendManager = new SendManager(socket);
     }
 
     public boolean login(String account,String password) throws IOException {
+        //创建监听
+        socket = new Socket(config.getProperty("ServerHost"),
+                Integer.parseInt(config.getProperty("ServerPort")));
+        sendManager = new SendManager(socket);
+
+        //是否登录成功
         boolean flage = false;
         //存储账户名
         config.setProperty("account",account);
@@ -79,9 +81,18 @@ public class Client {
             flage = true;
         }else if ("failed login".equals(status)){
             System.out.println("账户或者密码错误");
+            close();
+
         }else {
             System.out.println("未知异常");
+            close();
         }
         return flage;
+    }
+
+    public void close() throws IOException {
+        sendManager.close();
+        receiveManager.close();
+        socket.close();
     }
 }

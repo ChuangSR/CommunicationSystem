@@ -3,11 +3,9 @@ package com.cc68.manager;
 import com.alibaba.fastjson2.JSON;
 import com.cc68.Client;
 import com.cc68.beans.MessageBean;
-import com.cc68.beans.MessageDatabaseBean;
+import com.cc68.message.HandleMessage;
 import com.cc68.message.MessagePair;
 import com.cc68.utils.MessageUtil;
-import com.cc68.utils.SqlUtil;
-import org.apache.ibatis.session.SqlSession;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -40,8 +38,9 @@ public class ReceiveManager implements Runnable{
                 MessageUtil.saveMessage(bean, client.getConfig().get("account").toString());
                 //向控制台发送数据
                 System.out.println(message);
+                HandleMessage.handle(bean,client);
+
             }
-            reader.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -71,7 +70,10 @@ public class ReceiveManager implements Runnable{
         return null;
     }
 
-    public void close(){
+    public void close() throws IOException {
         flage = false;
+
+        reader.close();
+
     }
 }
