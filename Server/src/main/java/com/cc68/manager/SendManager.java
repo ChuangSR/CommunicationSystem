@@ -27,5 +27,6 @@ public class SendManager {
 
     public void close() throws IOException {
         writer.close();
+        socket.close();
     }
 }

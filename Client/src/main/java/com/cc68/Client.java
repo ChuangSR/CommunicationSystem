@@ -10,6 +10,7 @@ import org.apache.ibatis.io.Resources;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.Properties;
 
 public class Client {
@@ -21,7 +22,6 @@ public class Client {
 
     private ReceiveManager receiveManager;
 
-    //ReceiveManager
     private SendManager sendManager;
 
     private HeartbeatManger heartbeatManger;
@@ -42,41 +42,45 @@ public class Client {
         config = Resources.getResourceAsProperties("config.properties");
     }
 
-    public boolean login(String account,String password) throws IOException {
+    private HashMap<String,String> init(String account, String password, String type) throws IOException {
         this.socket = new Socket(config.getProperty("ServerHost"),
                 Integer.parseInt(config.getProperty("ServerPort")));
         //创建发送管理器
         sendManager = new SendManager(socket);
-
-        //是否登录成功
-        boolean flag = false;
         //存储账户名
         config.setProperty("account",account);
         //构建需要发送的数据
         String[] data = {account, MessageUtil.getMD5(password)};
-        MessageBean bean = MessageUtil.buildMessage("login", data, account);
+        MessageBean bean = MessageUtil.buildMessage(type, data, account);
         //发送数据
         sendManager.send(bean);
         //构建接收器
         receiveManager = new ReceiveManager(this);
         //监听服务器对登录消息的返回
         MessageBean receive = receiveManager.getReceive(bean.getID());
-        String status = receive.getData().get("status");
-        if ("successful login".equals(status)){
-            System.out.println("登录成功");
 
+        return receive.getData();
+    }
+
+    public boolean login(String account,String password) throws IOException {
+        //是否登录成功
+        boolean flag = false;
+        HashMap<String, String> data = init(account, password, "login");
+        if ("200".equals(data.get("status"))){
+            System.out.println(data.get("message"));
+            //运行心跳管理器
             heartbeatManger = new HeartbeatManger(config);
             Thread heartbeatThread = new Thread(heartbeatManger);
             heartbeatThread.start();
 
+            //运行接收器
             Thread receiveThread = new Thread(receiveManager);
             receiveThread.start();
 
             flag = true;
-        }else if ("failed login".equals(status)){
-            System.out.println("账户或者密码错误");
+        }else if ("400".equals(data.get("status"))){
+            System.out.println(data.get("message"));
             close();
-
         }else {
             System.out.println("未知异常");
             close();
@@ -84,8 +88,18 @@ public class Client {
         return flag;
     }
 
+    public void logon(String account,String password) throws IOException {
+        HashMap<String, String> data = init(account, password, "logon");
+        System.out.println(data.get("status"));
+        System.out.println(data.get("message"));
+        close();
+    }
+
     public void close() throws IOException {
         sendManager.close();
         receiveManager.close();
+        heartbeatManger.close();
     }
+
+
 }

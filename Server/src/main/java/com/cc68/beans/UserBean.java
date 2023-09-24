@@ -5,11 +5,13 @@ import com.cc68.manager.SendManager;
 import java.io.IOException;
 import java.net.Socket;
 
+/**
+ * 一个用户的类，用于存储用户的一些信息和执行一些操作
+ */
 public class UserBean {
     private String account;
     private String password;
 
-    private Socket socket;
 
     private SendManager sendManager;
 
@@ -25,12 +27,7 @@ public class UserBean {
         heartbeat = System.currentTimeMillis()/1000;
     }
 
-    public Socket getSocket() {
-        return socket;
-    }
-
     public void setSocket(Socket socket) throws IOException {
-        this.socket = socket;
         sendManager = new SendManager(socket);
     }
 
@@ -60,7 +57,6 @@ public class UserBean {
 
     public void close() throws IOException {
         sendManager.close();
-        socket.close();
     }
 
     public long getHeartbeat() {

@@ -10,4 +10,12 @@
    <select id="login" resultType="com.cc68.beans.UserBean">
        select count(*) from t_users where account = #{account} and password = #{password};
    </select>
+
+    <insert id="logon">
+        insert into t_users(account,password) value (#{account},#{password});
+    </insert>
+
+    <select id="check">
+        select account from t_users where account = #{account};
+    </select>
 </mapper>

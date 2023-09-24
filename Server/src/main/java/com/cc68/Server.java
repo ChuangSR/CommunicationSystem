@@ -6,17 +6,19 @@ import com.cc68.manager.HeartbeatManger;
 import com.cc68.manager.ReceiveManager;
 import com.cc68.manager.UsersManager;
 import com.cc68.manager.Wrecker;
+import com.cc68.message.HandleMessage;
 import org.apache.ibatis.io.Resources;
 
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.util.HashMap;
 import java.util.Properties;
 
+/**
+ *
+ */
 public class Server {
-    //服务器的基本配置
+    //服务器的基本配置信息
     private Properties config;
-
 
     private UsersManager usersManager;
 
@@ -67,7 +69,7 @@ public class Server {
             MessageBean messageBean = receiveManager.listen();
             UserBean userBean = null;
             //判读是否为登录事件，改事件较为特殊
-            if ("login".equals(messageBean.getType())){
+            if ("login".equals(messageBean.getType()) || "logon".equals(messageBean.getType())){
                 HashMap<String, String> data = messageBean.getData();
                 userBean = new UserBean(data.get("account"),data.get("password"));
                 userBean.setSocket(receiveManager.getAccept());

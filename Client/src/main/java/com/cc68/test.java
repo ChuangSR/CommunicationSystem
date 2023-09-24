@@ -14,8 +14,13 @@ import java.util.HashMap;
 
 public class test {
     public static void main(String[] args) {
-        String md5 = MessageUtil.getMD5("123456");
-        System.out.println(md5);
+        HashMap<String,String> hashMap = new HashMap<>();
+        temp(hashMap);
+        System.out.println(hashMap.get("adas"));
+    }
+
+    public static void temp(HashMap<String,String> hashMap){
+        hashMap.put("adas","gadgag");
     }
 
 }

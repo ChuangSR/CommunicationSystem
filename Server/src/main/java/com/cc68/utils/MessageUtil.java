@@ -14,25 +14,26 @@ import java.util.HashMap;
 
 public class MessageUtil {
     //构造消息
-    public static MessageBean buildMessage(String type, String[] data, String account){
-        HashMap<String,String> temp = new HashMap<>();
-        MessageBean bean = new MessageBean(getID(type,account),account,type,temp);
-        switch (type){
-            case "login":
-                temp.put("account",data[0]);
-                temp.put("password",Integer.toString(data[1].hashCode()));
-                break;
-        }
-        return bean;
-    }
+//    public static MessageBean buildMessage(String type, String[] data, String account){
+//        HashMap<String,String> temp = new HashMap<>();
+//        MessageBean bean = new MessageBean(getID(type,account),account,type,temp);
+//        switch (type){
+//            case "login":
+//                temp.put("account",data[0]);
+//                temp.put("password",Integer.toString(data[1].hashCode()));
+//                break;
+//        }
+//        return bean;
+//    }
 
     public static MessageBean replyMessage(String ID, String type, String[] data, Server server){
         MessageBean bean = new MessageBean();
         HashMap<String,String> temp = new HashMap<>();
         switch (type){
-            case "login":
-                temp.put("status",data[0]);
+            case "login","logon":
+                loginAndLogon(temp,data);
                 break;
+
         }
 
 
@@ -111,4 +112,10 @@ public class MessageUtil {
         Date date = new Date(System.currentTimeMillis());
         return date.toString();
     }
+
+    private static void loginAndLogon(HashMap<String,String> temp,String[] data){
+        temp.put("status",data[0]);
+        temp.put("message",data[1]);
+    }
+
 }
