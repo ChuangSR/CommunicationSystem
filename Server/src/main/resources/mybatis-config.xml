@@ -22,7 +22,6 @@
     </environments>
     <mappers>
         <!--mapper文件的路径，默认从类的根目录开始-->
-        <mapper resource="MessageMapper.xml"/>
         <mapper resource="UserMapper.xml"/>
     </mappers>
 </configuration>

@@ -51,13 +51,12 @@ public class Server {
     public Server() throws IOException {
         this.config = Resources.getResourceAsProperties("config.properties");
         usersManager = new UsersManager();
-
+        server = new ServerSocket(Integer.parseInt(config.getProperty("port")));
         receiveManager = new ReceiveManager(this);
 
     }
 
     public void start() throws IOException {
-        server = new ServerSocket(Integer.parseInt(config.getProperty("port")));
         while (flage){
             MessageBean messageBean = receiveManager.listen();
             UserBean userBean = null;

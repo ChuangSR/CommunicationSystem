@@ -18,7 +18,7 @@ public class MessageUtil {
         switch (type){
             case "login":
                 temp.put("account",data[0]);
-                temp.put("password",Integer.toString(data[1].hashCode()));
+                temp.put("password",getMD5(data[1]));
                 break;
         }
         return bean;

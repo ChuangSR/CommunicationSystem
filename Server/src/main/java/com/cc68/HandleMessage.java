@@ -1,5 +1,6 @@
 package com.cc68;
 
+import com.alibaba.fastjson2.JSON;
 import com.cc68.beans.MessageBean;
 import com.cc68.beans.UserBean;
 import com.cc68.utils.MessageUtil;
@@ -32,7 +33,6 @@ public class HandleMessage {
         String[] status = new String[1];
 
         //构建返回数据
-        MessageBean reply = MessageUtil.replyMessage(messageBean.getID(),"login",status,server);
 
         if (cursor != null){
             status[0] = "successful login";
@@ -47,6 +47,7 @@ public class HandleMessage {
                 throw new RuntimeException(e);
             }
         }
+        MessageBean reply = MessageUtil.replyMessage(messageBean.getID(),"login",status,server);
 
         return reply;
     }

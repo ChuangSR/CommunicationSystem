@@ -7,7 +7,7 @@ import java.net.Socket;
 
 public class UserBean {
     private String account;
-    private String passwowrd;
+    private String password;
 
     private Socket socket;
 
@@ -19,7 +19,7 @@ public class UserBean {
 
     public UserBean(String account, String passwowrd) {
         this.account = account;
-        this.passwowrd = passwowrd;
+        this.password = passwowrd;
     }
 
     public Socket getSocket() {
@@ -47,14 +47,13 @@ public class UserBean {
         this.account = account;
     }
 
-    public String getPasswowrd() {
-        return passwowrd;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPasswowrd(String passwowrd) {
-        this.passwowrd = passwowrd;
+    public void setPassword(String password) {
+        this.password = password;
     }
-
 
     public void close() throws IOException {
         sendManager.close();

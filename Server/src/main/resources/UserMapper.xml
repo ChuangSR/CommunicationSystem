@@ -7,7 +7,7 @@
     <!--        select * from Blog where id = #{id}-->
     <!--    </select>-->
     <!--这个id时唯一的表示这个SQL语句-->
-   <select id="login">
-       select count(*) from users where account = #{account} and password = #{password};
+   <select id="login" resultType="com.cc68.beans.UserBean">
+       select count(*) from t_users where account = #{account} and password = #{password};
    </select>
 </mapper>

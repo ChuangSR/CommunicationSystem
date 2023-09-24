@@ -41,12 +41,16 @@ public class ReceiveManager{
 
     public MessageBean listen() throws IOException {
         accept = serverSocket.accept();
+        System.out.println("接收到一个连接");
         MessageBean bean = null;
         BufferedReader reader = new BufferedReader(new InputStreamReader(accept.getInputStream()));
         String message = null;
         while ((message =reader.readLine()) != null){
+            System.out.println("读取数据成功");
             bean = JSON.parseObject(message, MessageBean.class);
+            message = null;
         }
+
         return bean;
     }
 
