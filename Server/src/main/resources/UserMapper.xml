@@ -15,7 +15,7 @@
         insert into t_users(account,password) value (#{account},#{password});
     </insert>
 
-    <select id="check">
+    <select id="check" resultType="com.cc68.beans.UserBean">
         select account from t_users where account = #{account};
     </select>
 </mapper>

@@ -28,15 +28,18 @@ public class ReceiveManager{
         this.serverSocket = new ServerSocket(Integer.parseInt(config.getProperty(key)));
     }
 
-    public MessageBean listen() throws IOException {
-        accept = serverSocket.accept();
+    public MessageBean listen(){
         MessageBean bean = null;
-        BufferedReader reader = new BufferedReader(new InputStreamReader(accept.getInputStream()));
-        String message = null;
-        while ((message =reader.readLine()) != null){
-            bean = JSON.parseObject(message, MessageBean.class);
+        try {
+            accept = serverSocket.accept();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(accept.getInputStream()));
+            String message = null;
+            while ((message =reader.readLine()) != null){
+                bean = JSON.parseObject(message, MessageBean.class);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
         return bean;
     }
 

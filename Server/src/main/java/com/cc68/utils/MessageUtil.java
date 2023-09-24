@@ -41,6 +41,7 @@ public class MessageUtil {
         bean.setID(ID);
         bean.setType(type);
         bean.setData(temp);
+
         return bean;
     }
 

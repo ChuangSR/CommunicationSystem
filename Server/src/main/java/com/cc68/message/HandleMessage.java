@@ -1,5 +1,6 @@
 package com.cc68.message;
 
+import com.alibaba.fastjson2.JSON;
 import com.cc68.Server;
 import com.cc68.beans.MessageBean;
 import com.cc68.beans.UserBean;
@@ -80,11 +81,6 @@ public class HandleMessage {
 
         MessageBean reply = MessageUtil.replyMessage(messageBean.getID(),"logon",data,server);
         sqlSession.commit();
-        try {
-            userBean.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return reply;
     }
 }

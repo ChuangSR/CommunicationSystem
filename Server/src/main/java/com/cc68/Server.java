@@ -78,6 +78,10 @@ public class Server {
             }
             MessageBean replyBean = HandleMessage.handle(messageBean, userBean,this);
             userBean.getSendManager().send(replyBean);
+
+            if ("logon".equals(messageBean.getType())){
+                userBean.close();
+            }
         }
     }
 

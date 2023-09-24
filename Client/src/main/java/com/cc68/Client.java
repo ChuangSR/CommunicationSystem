@@ -98,7 +98,9 @@ public class Client {
     public void close() throws IOException {
         sendManager.close();
         receiveManager.close();
-        heartbeatManger.close();
+        if (heartbeatManger != null){
+            heartbeatManger.close();
+        }
     }
 
 

@@ -22,6 +22,8 @@ public class Main {
             if (choose == 1){
                 login();
             }else if (choose ==2){
+                logon();
+            }else if (choose == 3){
                 exit();
             }else {
                 inputError();
@@ -42,12 +44,13 @@ public class Main {
         return;
     }
 
-    public static void logon(){
+    public static void logon() throws IOException {
         System.out.println("==================================");
         System.out.print("请输入账号：");
         String account = scanner.next();
         System.out.print("请输入密码：");
         String password = scanner.next();
+        client.logon(account,password);
     }
 
     public static void menu(){

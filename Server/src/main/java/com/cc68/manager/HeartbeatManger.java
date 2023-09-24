@@ -27,15 +27,11 @@ public class HeartbeatManger implements Runnable{
 
     @Override
     public void run() {
-        try {
-            System.out.print(MessageUtil.getTime());
-            System.out.println(":心跳管理器开始运行！");
-            while (flag){
-                MessageBean bean = receiveManager.listen();
-                usersManager.getUser(bean.getOriginator()).refresh();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        System.out.print(MessageUtil.getTime());
+        System.out.println(":心跳管理器开始运行！");
+        while (flag){
+            MessageBean bean = receiveManager.listen();
+            usersManager.getUser(bean.getOriginator()).refresh();
         }
     }
 
