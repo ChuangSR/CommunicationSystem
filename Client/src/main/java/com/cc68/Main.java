@@ -15,7 +15,8 @@ public class Main {
             System.out.println("===============菜单================");
             System.out.println("=           1  登录               =");
             System.out.println("=           2  注册               =");
-            System.out.println("=           3  退出               =");
+            System.out.println("=           3  修改密码            =");
+            System.out.println("=           4  退出               =");
             System.out.println("==================================");
             System.out.print("请输入:");
             int choose = scanner.nextInt();
@@ -24,6 +25,8 @@ public class Main {
             }else if (choose ==2){
                 logon();
             }else if (choose == 3){
+
+            }else if (choose == 4){
                 exit();
             }else {
                 inputError();
@@ -51,6 +54,16 @@ public class Main {
         System.out.print("请输入密码：");
         String password = scanner.next();
         client.logon(account,password);
+    }
+
+    public static void changePwd(){
+        System.out.println("==================================");
+        System.out.print("请输入账号：");
+        String account = scanner.next();
+        System.out.print("请输入原密码：");
+        String pwdOld = scanner.next();
+        System.out.print("请输入新密码：");
+        String pwdNew = scanner.next();
     }
 
     public static void menu(){

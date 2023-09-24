@@ -42,15 +42,13 @@ public class Client {
         config = Resources.getResourceAsProperties("config.properties");
     }
 
-    private HashMap<String,String> init(String account, String password, String type) throws IOException {
+    private HashMap<String,String> init(String type,String... data) throws IOException {
         this.socket = new Socket(config.getProperty("ServerHost"),
                 Integer.parseInt(config.getProperty("ServerPort")));
         //创建发送管理器
         sendManager = new SendManager(socket);
         //存储账户名
         config.setProperty("account",account);
-        //构建需要发送的数据
-        String[] data = {account, MessageUtil.getMD5(password)};
         MessageBean bean = MessageUtil.buildMessage(type, data, account);
         //发送数据
         sendManager.send(bean);
@@ -65,7 +63,7 @@ public class Client {
     public boolean login(String account,String password) throws IOException {
         //是否登录成功
         boolean flag = false;
-        HashMap<String, String> data = init(account, password, "login");
+        HashMap<String, String> data = init("login", account, password);
         if ("200".equals(data.get("status"))){
             System.out.println(data.get("message"));
             //运行心跳管理器
@@ -89,11 +87,16 @@ public class Client {
     }
 
     public void logon(String account,String password) throws IOException {
-        HashMap<String, String> data = init(account, password, "logon");
+        HashMap<String, String> data = init("logon",account, password);
         System.out.println(data.get("status"));
         System.out.println(data.get("message"));
         close();
     }
+
+    public void changPwd(String account,String password){
+
+    }
+
 
     public void close() throws IOException {
         sendManager.close();
