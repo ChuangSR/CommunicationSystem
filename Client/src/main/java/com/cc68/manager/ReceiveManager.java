@@ -24,8 +24,8 @@ public class ReceiveManager implements Runnable{
     //用于存储服务器对于消息的回复，普通的消息将不会被存储
     private MessagePair messagePair;
 
-    public ReceiveManager(Socket socket,Client client) throws IOException {
-        this.socket = socket;
+    public ReceiveManager(Client client) throws IOException {
+        this.socket = client.getSocket();
         reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.client = client;
     }

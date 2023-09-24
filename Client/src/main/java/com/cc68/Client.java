@@ -5,6 +5,7 @@ import com.cc68.beans.MessageBean;
 import com.cc68.manager.ReceiveManager;
 import com.cc68.manager.SendManager;
 import com.cc68.utils.MessageUtil;
+import org.apache.ibatis.io.Resources;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,18 +54,12 @@ public class Client {
     }
 
     public Client() throws IOException {
-        config = readConfig();
+        config = Resources.getResourceAsProperties("config.properties");
         socket = new Socket(config.getProperty("ServerHost"),
                 Integer.parseInt(config.getProperty("ServerPort")));
         sendManager = new SendManager(socket);
     }
-    private Properties readConfig() throws IOException {
-        InputStream resourceAsStream = this.getClass().getResourceAsStream("config.properties");
-        Properties config = new Properties();
-        config.load(resourceAsStream);
-        resourceAsStream.close();
-        return config;
-    }
+
     public boolean login(String account,String password) throws IOException {
         boolean flage = false;
         //存储账户名
@@ -75,7 +70,7 @@ public class Client {
         //发送数据
         sendManager.send(bean);
         //构建接收器
-        receiveManager = new ReceiveManager(socket,this);
+        receiveManager = new ReceiveManager(this);
         //监听服务器对登录消息的返回
         MessageBean receive = receiveManager.getReceive(bean.getID());
         String status = receive.getData().get("status");

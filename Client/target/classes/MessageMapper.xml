@@ -12,7 +12,7 @@
    </insert>
 
     <select id="se">
-        select * from messages where type = "sada";
+        select * from messages;
     </select>
 
     <insert id="insert_data">

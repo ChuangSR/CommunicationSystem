@@ -1,5 +1,6 @@
 package com.cc68.utils;
 
+import com.cc68.Server;
 import com.cc68.beans.MessageBean;
 import com.cc68.beans.MessageDatabaseBean;
 import org.apache.ibatis.session.SqlSession;
@@ -20,6 +21,23 @@ public class MessageUtil {
                 temp.put("password",Integer.toString(data[1].hashCode()));
                 break;
         }
+        return bean;
+    }
+
+    public static MessageBean replyMessage(String ID, String type, String[] data, Server server){
+        MessageBean bean = new MessageBean();
+        HashMap<String,String> temp = new HashMap<>();
+        switch (type){
+            case "login":
+                temp.put("status",data[0]);
+                break;
+        }
+
+
+        bean.setOriginator(server.getConfig().get("serverName").toString());
+        bean.setID(ID);
+        bean.setType(type);
+        bean.setData(temp);
         return bean;
     }
 
