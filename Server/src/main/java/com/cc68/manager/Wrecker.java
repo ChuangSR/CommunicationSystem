@@ -14,7 +14,7 @@ public class Wrecker implements Runnable{
     private UsersManager usersManager;
     private int heartbeatTime;
 
-    private boolean flage = true;
+    private boolean flag = true;
 
     public Wrecker(){}
 
@@ -27,7 +27,7 @@ public class Wrecker implements Runnable{
     public void run() {
         System.out.print(MessageUtil.getTime());
         System.out.println(":摧毁程序开始运行！");
-        while (flage){
+        while (flag){
             try {
                 Thread.sleep(1000);
                 ArrayList<UserBean> all = usersManager.getAll();
@@ -47,6 +47,6 @@ public class Wrecker implements Runnable{
     }
 
     public void close(){
-        flage = false;
+        flag = false;
     }
 }

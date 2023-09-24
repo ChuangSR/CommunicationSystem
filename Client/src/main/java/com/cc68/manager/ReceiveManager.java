@@ -17,7 +17,7 @@ public class ReceiveManager implements Runnable{
     private Socket socket;
     private BufferedReader reader;
 
-    private boolean flage = true;
+    private boolean flag = true;
 
     //用于存储服务器对于消息的回复，普通的消息将不会被存储
     private MessagePair messagePair;
@@ -32,7 +32,7 @@ public class ReceiveManager implements Runnable{
     public void run() {
         try {
             String message = null;
-            while (flage&&(message = reader.readLine())!=null){
+            while (flag&&(message = reader.readLine())!=null){
                 //存储数据到数据库
                 MessageBean bean = JSON.parseObject(message, MessageBean.class);
                 MessageUtil.saveMessage(bean, client.getConfig().get("account").toString());
@@ -71,7 +71,7 @@ public class ReceiveManager implements Runnable{
     }
 
     public void close() throws IOException {
-        flage = false;
+        flag = false;
 
         reader.close();
 

@@ -16,7 +16,7 @@ public class HeartbeatManger implements Runnable{
 
     private ReceiveManager receiveManager;
 
-    private boolean flage = true;
+    private boolean flag = true;
 
     public HeartbeatManger(){}
 
@@ -30,7 +30,7 @@ public class HeartbeatManger implements Runnable{
         try {
             System.out.print(MessageUtil.getTime());
             System.out.println(":心跳管理器开始运行！");
-            while (flage){
+            while (flag){
                 MessageBean bean = receiveManager.listen();
                 usersManager.getUser(bean.getOriginator()).refresh();
             }
@@ -40,6 +40,6 @@ public class HeartbeatManger implements Runnable{
     }
 
     public void close(){
-        flage = false;
+        flag = false;
     }
 }

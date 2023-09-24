@@ -1,7 +1,6 @@
 package com.cc68.manager;
 
 import com.alibaba.fastjson2.JSON;
-import com.cc68.Server;
 import com.cc68.beans.MessageBean;
 
 import java.io.BufferedReader;

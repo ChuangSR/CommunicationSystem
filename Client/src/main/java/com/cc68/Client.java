@@ -2,6 +2,7 @@ package com.cc68;
 
 
 import com.cc68.beans.MessageBean;
+import com.cc68.manager.HeartbeatManger;
 import com.cc68.manager.ReceiveManager;
 import com.cc68.manager.SendManager;
 import com.cc68.utils.MessageUtil;
@@ -12,44 +13,29 @@ import java.net.Socket;
 import java.util.Properties;
 
 public class Client {
-    private Socket socket;
+    private String account;
+
     private Properties config;
+
+    private Socket socket;
 
     private ReceiveManager receiveManager;
 
     //ReceiveManager
     private SendManager sendManager;
 
+    private HeartbeatManger heartbeatManger;
+
     public Socket getSocket() {
         return socket;
-    }
-
-    public void setSocket(Socket socket) {
-        this.socket = socket;
     }
 
     public Properties getConfig() {
         return config;
     }
 
-    public void setConfig(Properties config) {
-        this.config = config;
-    }
-
-    public ReceiveManager getReceiveManager() {
-        return receiveManager;
-    }
-
-    public void setReceiveManager(ReceiveManager receiveManager) {
-        this.receiveManager = receiveManager;
-    }
-
-    public SendManager getSendManager() {
-        return sendManager;
-    }
-
-    public void setSendManager(SendManager sendManager) {
-        this.sendManager = sendManager;
+    public String getAccount() {
+        return account;
     }
 
     public Client() throws IOException {
@@ -57,13 +43,13 @@ public class Client {
     }
 
     public boolean login(String account,String password) throws IOException {
-        //创建监听
-        socket = new Socket(config.getProperty("ServerHost"),
+        this.socket = new Socket(config.getProperty("ServerHost"),
                 Integer.parseInt(config.getProperty("ServerPort")));
+        //创建发送管理器
         sendManager = new SendManager(socket);
 
         //是否登录成功
-        boolean flage = false;
+        boolean flag = false;
         //存储账户名
         config.setProperty("account",account);
         //构建需要发送的数据
@@ -78,9 +64,15 @@ public class Client {
         String status = receive.getData().get("status");
         if ("successful login".equals(status)){
             System.out.println("登录成功");
-            flage = true;
-            Thread thread = new Thread(receiveManager);
-            thread.start();
+
+            heartbeatManger = new HeartbeatManger(config);
+            Thread heartbeatThread = new Thread(heartbeatManger);
+            heartbeatThread.start();
+
+            Thread receiveThread = new Thread(receiveManager);
+            receiveThread.start();
+
+            flag = true;
         }else if ("failed login".equals(status)){
             System.out.println("账户或者密码错误");
             close();
@@ -89,12 +81,11 @@ public class Client {
             System.out.println("未知异常");
             close();
         }
-        return flage;
+        return flag;
     }
 
     public void close() throws IOException {
         sendManager.close();
         receiveManager.close();
-        socket.close();
     }
 }
