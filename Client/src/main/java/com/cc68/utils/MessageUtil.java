@@ -17,11 +17,10 @@ public class MessageUtil {
     public static MessageBean buildMessage(String type, String[] data, String account){
         HashMap<String,String> temp = new HashMap<>();
         MessageBean bean = new MessageBean(getID(type,account),account,type,temp);
-        switch (type){
-            case "login","logon":
-                loginOrLogon(temp,data);
-                break;
-
+        switch (type) {
+            case "login" -> login(temp, data);
+            case "logon" -> logon(temp, data);
+            case "changPwd" -> changPwd(temp, data);
         }
         return bean;
     }
@@ -31,8 +30,7 @@ public class MessageUtil {
         long timeMillis = System.currentTimeMillis();
         StringBuilder builder = new StringBuilder();
         builder.append(timeMillis).append(type).append(account);
-        String md5 = getMD5(builder.toString());
-        return md5;
+        return getMD5(builder.toString());
     }
 
     //加密函数
@@ -47,12 +45,12 @@ public class MessageUtil {
 
             BigInteger bigInt = new BigInteger(1, byteArray);
             // 参数16表示16进制
-            String result = bigInt.toString(16);
+            StringBuilder result = new StringBuilder(bigInt.toString(16));
             // 不足32位高位补零
             while(result.length() < 32) {
-                result = "0" + result;
+                result.insert(0, "0");
             }
-            return result;
+            return result.toString();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
@@ -63,7 +61,7 @@ public class MessageUtil {
      *  将MessageBean转为MessageDatabaseBean，MessageDatabaseBean用于存储数据
      * @param messageBean 发送的数据对象
      * @param account 目标账户
-     * @return
+     * @return MessageDatabaseBean
      */
     private static MessageDatabaseBean toMessageDatabaseBean(MessageBean messageBean,String account){
         MessageDatabaseBean bean = new MessageDatabaseBean();
@@ -92,8 +90,19 @@ public class MessageUtil {
         Date date = new Date(System.currentTimeMillis());
         return date.toString();
     }
-    private static void loginOrLogon(HashMap<String,String> temp,String[] data){
+    private static void login(HashMap<String,String> temp,String[] data){
         temp.put("account",data[0]);
         temp.put("password",getMD5(data[1]));
+    }
+
+    private static void logon(HashMap<String,String> temp,String[] data){
+        temp.put("account",data[0]);
+        temp.put("password",getMD5(data[1]));
+    }
+
+    private static void changPwd(HashMap<String,String> temp,String[] data){
+        temp.put("account",data[0]);
+        temp.put("password",getMD5(data[1]));
+        temp.put("pwdNew",getMD5(data[2]));
     }
 }

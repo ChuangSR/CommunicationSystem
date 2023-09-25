@@ -48,7 +48,7 @@ public class Client {
         //创建发送管理器
         sendManager = new SendManager(socket);
         //存储账户名
-        config.setProperty("account",account);
+        config.setProperty("account",data[0]);
         MessageBean bean = MessageUtil.buildMessage(type, data, account);
         //发送数据
         sendManager.send(bean);
@@ -93,8 +93,11 @@ public class Client {
         close();
     }
 
-    public void changPwd(String account,String password){
-
+    public void changPwd(String account,String password,String pwdNew) throws IOException {
+        HashMap<String, String> data = init("changPwd", account, password, pwdNew);
+        System.out.println(data.get("status"));
+        System.out.println(data.get("message"));
+        close();
     }
 
 

@@ -67,9 +67,10 @@ public class Server {
     public void start() throws IOException {
         while (flage){
             MessageBean messageBean = receiveManager.listen();
-            UserBean userBean = null;
+            UserBean userBean;
             //判读是否为登录事件，改事件较为特殊
-            if ("login".equals(messageBean.getType()) || "logon".equals(messageBean.getType())){
+            if ("login".equals(messageBean.getType()) || "logon".equals(messageBean.getType())
+            ||"changPwd".equals(messageBean.getType())){
                 HashMap<String, String> data = messageBean.getData();
                 userBean = new UserBean(data.get("account"),data.get("password"));
                 userBean.setSocket(receiveManager.getAccept());
@@ -79,7 +80,7 @@ public class Server {
             MessageBean replyBean = HandleMessage.handle(messageBean, userBean,this);
             userBean.getSendManager().send(replyBean);
 
-            if ("logon".equals(messageBean.getType())){
+            if ("logon".equals(messageBean.getType())||"changPwd".equals(messageBean.getType())){
                 userBean.close();
             }
         }

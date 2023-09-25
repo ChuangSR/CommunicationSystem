@@ -18,16 +18,12 @@ import java.io.IOException;
  */
 public class HandleMessage {
     public static MessageBean handle(MessageBean messageBean, UserBean userBean, Server server){
-        MessageBean reply = null;
-        switch (messageBean.getType()){
-            case "login":
-                reply = login(messageBean,userBean,server);
-                break;
-            case "logon":
-                reply = logon(messageBean,userBean,server);
-                break;
-        }
-        return reply;
+        return switch (messageBean.getType()) {
+            case "login" -> login(messageBean, userBean, server);
+            case "logon" -> logon(messageBean, userBean, server);
+            case "changPwd" -> changPwd(messageBean, userBean, server);
+            default -> null;
+        };
     }
 
     private static MessageBean login(MessageBean messageBean,UserBean userBean,Server server){
@@ -56,9 +52,8 @@ public class HandleMessage {
         }
 
         //构建返回数据
-        MessageBean reply = MessageUtil.replyMessage(messageBean.getID(),"login",data,server);
         sqlSession.close();
-        return reply;
+        return MessageUtil.replyMessage(messageBean.getID(),"login",data,server);
     }
 
     private static MessageBean logon(MessageBean messageBean,UserBean userBean,Server server){
@@ -78,9 +73,29 @@ public class HandleMessage {
             sqlSession.commit();
         }
 
+        sqlSession.close();
+        return MessageUtil.replyMessage(messageBean.getID(),"logon",data,server);
+    }
 
-        MessageBean reply = MessageUtil.replyMessage(messageBean.getID(),"logon",data,server);
-        sqlSession.commit();
-        return reply;
+    private static MessageBean changPwd(MessageBean messageBean,UserBean userBean,Server server){
+        SqlSession sqlSession = SqlUtil.getSqlSession();
+
+        //查询数据
+        Cursor<Object> cursor = sqlSession.selectCursor("user.check", userBean);
+
+        String[] data = new String[2];
+
+        if (cursor == null){
+            data[0] = "400";
+            data[1] = "账户不存在！";
+        }else {
+            userBean.setPassword(messageBean.getData().get("pwdNew"));
+            sqlSession.insert("user.changPwd",userBean);
+            data[0] = "200";
+            data[1] = "密码修改成功!";
+            sqlSession.commit();
+        }
+        sqlSession.close();
+        return MessageUtil.replyMessage(messageBean.getID(),"logon",data,server);
     }
 }

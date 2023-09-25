@@ -25,7 +25,7 @@ public class Main {
             }else if (choose ==2){
                 logon();
             }else if (choose == 3){
-
+                changePwd();
             }else if (choose == 4){
                 exit();
             }else {
@@ -56,21 +56,22 @@ public class Main {
         client.logon(account,password);
     }
 
-    public static void changePwd(){
+    public static void changePwd() throws IOException {
         System.out.println("==================================");
         System.out.print("请输入账号：");
         String account = scanner.next();
         System.out.print("请输入原密码：");
-        String pwdOld = scanner.next();
+        String password = scanner.next();
         System.out.print("请输入新密码：");
         String pwdNew = scanner.next();
+        client.changPwd(account,password,pwdNew);
     }
 
     public static void menu(){
 
     }
 
-    public static void inputError() throws IOException {
+    public static void inputError(){
         System.out.println("输入异常");
     }
 

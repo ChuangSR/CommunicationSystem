@@ -18,4 +18,8 @@
     <select id="check" resultType="com.cc68.beans.UserBean">
         select account from t_users where account = #{account};
     </select>
+
+    <update id="changPwd">
+        update t_users set password=#{password} where account = #{account};
+    </update>
 </mapper>
