@@ -8,10 +8,10 @@
     <!--    </select>-->
     <!--这个id时唯一的表示这个SQL语句-->
    <select id="login" resultType="com.cc68.beans.UserBean">
-       select count(*) from t_users where account = #{account} and password = #{password};
+       select account from t_users where account = #{account} and password = #{password};
    </select>
 
-    <insert id="logon">
+    <insert id="logon" parameterType="com.cc68.beans.UserBean">
         insert into t_users(account,password) value (#{account},#{password});
     </insert>
 

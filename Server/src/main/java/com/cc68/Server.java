@@ -80,7 +80,8 @@ public class Server {
             MessageBean replyBean = HandleMessage.handle(messageBean, userBean,this);
             userBean.getSendManager().send(replyBean);
 
-            if ("logon".equals(messageBean.getType())||"changPwd".equals(messageBean.getType())){
+            if ("logon".equals(messageBean.getType())||"changPwd".equals(messageBean.getType())
+            || "400".equals(replyBean.getData().get("status"))){
                 userBean.close();
             }
         }

@@ -31,11 +31,11 @@ public class HandleMessage {
         SqlSession sqlSession = SqlUtil.getSqlSession();
 
         //查询数据
-        Cursor<Object> cursor = sqlSession.selectCursor("user.login", userBean);
+        UserBean temp = sqlSession.selectOne("user.login", userBean);
         String[] data = new String[2];
 
 
-        if (cursor != null){
+        if (temp != null){
             data[0] = "200";
             data[1] = "successful login";
             //向用户管理器添加数据
@@ -43,38 +43,31 @@ public class HandleMessage {
         }else {
             data[0] = "400";
             data[1] = "failed login";
-            //关闭bean对象
-            try {
-                userBean.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
         }
-
+        MessageBean bean = MessageUtil.replyMessage(messageBean.getID(), "login", data, server);
         //构建返回数据
         sqlSession.close();
-        return MessageUtil.replyMessage(messageBean.getID(),"login",data,server);
+        return bean;
     }
 
     private static MessageBean logon(MessageBean messageBean,UserBean userBean,Server server){
         SqlSession sqlSession = SqlUtil.getSqlSession();
-
         //查询数据
-        Cursor<Object> cursor = sqlSession.selectCursor("user.check", userBean);
+        UserBean temp = sqlSession.selectOne("user.check", userBean);
         String[] data = new String[2];
 
-        if (cursor != null){
+        if (temp != null){
             data[0] = "400";
             data[1] = "账户已存在！";
         }else {
+            System.out.println(JSON.toJSONString(userBean));
             sqlSession.insert("user.logon",userBean);
             data[0] = "200";
             data[1] = "注册成功";
             sqlSession.commit();
         }
-
         sqlSession.close();
-        return MessageUtil.replyMessage(messageBean.getID(),"logon",data,server);
+        return MessageUtil.replyMessage(messageBean.getID(), "logon", data, server);
     }
 
     private static MessageBean changPwd(MessageBean messageBean,UserBean userBean,Server server){
