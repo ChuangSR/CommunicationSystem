@@ -55,7 +55,6 @@ public class ReceiveManager implements Runnable{
         String message = null;
         try {
             message = reader.readLine();
-            System.out.println(message);
             MessageBean bean = JSON.parseObject(message, MessageBean.class);
             if (ID.equals(bean.getID())){
                 //返回需要的数据

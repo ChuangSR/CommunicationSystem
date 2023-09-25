@@ -33,7 +33,7 @@ public class ReceiveManager{
         try {
             accept = serverSocket.accept();
             BufferedReader reader = new BufferedReader(new InputStreamReader(accept.getInputStream()));
-            String message = null;
+            String message;
             while ((message =reader.readLine()) != null){
                 bean = JSON.parseObject(message, MessageBean.class);
             }

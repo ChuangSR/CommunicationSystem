@@ -12,7 +12,7 @@
    </select>
 
     <insert id="logon" parameterType="com.cc68.beans.UserBean">
-        insert into t_users(account,password) value (#{account},#{password});
+        insert into t_users(account,password) values (#{account},#{password});
     </insert>
 
     <select id="check" resultType="com.cc68.beans.UserBean">
