@@ -1,10 +1,13 @@
 package com.cc68;
 
 
+import com.alibaba.fastjson2.JSON;
 import com.cc68.beans.MessageBean;
+import com.cc68.manager.ConsoleMessageManger;
 import com.cc68.manager.HeartbeatManger;
 import com.cc68.manager.ReceiveManager;
 import com.cc68.manager.SendManager;
+import com.cc68.message.HandleMessage;
 import com.cc68.utils.MessageUtil;
 import org.apache.ibatis.io.Resources;
 
@@ -26,6 +29,42 @@ public class Client {
 
     private HeartbeatManger heartbeatManger;
 
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
+    public void setConfig(Properties config) {
+        this.config = config;
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+
+    public ReceiveManager getReceiveManager() {
+        return receiveManager;
+    }
+
+    public void setReceiveManager(ReceiveManager receiveManager) {
+        this.receiveManager = receiveManager;
+    }
+
+    public SendManager getSendManager() {
+        return sendManager;
+    }
+
+    public void setSendManager(SendManager sendManager) {
+        this.sendManager = sendManager;
+    }
+
+    public HeartbeatManger getHeartbeatManger() {
+        return heartbeatManger;
+    }
+
+    public void setHeartbeatManger(HeartbeatManger heartbeatManger) {
+        this.heartbeatManger = heartbeatManger;
+    }
+
     public Socket getSocket() {
         return socket;
     }
@@ -42,7 +81,7 @@ public class Client {
         config = Resources.getResourceAsProperties("config.properties");
     }
 
-    private HashMap<String,String> init(String type,String... data) throws IOException {
+    private MessageBean init(String type,String... data) throws IOException {
         this.socket = new Socket(config.getProperty("ServerHost"),
                 Integer.parseInt(config.getProperty("ServerPort")));
         //创建发送管理器
@@ -57,49 +96,37 @@ public class Client {
         //监听服务器对登录消息的返回
         MessageBean receive = receiveManager.getReceive(bean.getID());
 
-        return receive.getData();
+        return receive;
     }
 
     public boolean login(String account,String password) throws IOException {
         //是否登录成功
-        boolean flag = false;
-        HashMap<String, String> data = init("login", account, password);
-        if ("200".equals(data.get("status"))){
-            System.out.println(data.get("message"));
-            //运行心跳管理器
-            heartbeatManger = new HeartbeatManger(config);
-            Thread heartbeatThread = new Thread(heartbeatManger);
-            heartbeatThread.start();
-
-            //运行接收器
-            Thread receiveThread = new Thread(receiveManager);
-            receiveThread.start();
-
-            flag = true;
-        }else if ("400".equals(data.get("status"))){
-            System.out.println(data.get("message"));
-            close();
-        }else {
-            System.out.println("未知异常");
-            close();
-        }
+        MessageBean bean = init("login", account, password);
+        HashMap<String, String> data = HandleMessage.handle(bean, this);
+        boolean flag = Boolean.parseBoolean(data.get("status"));
+        ConsoleMessageManger.send(data);
         return flag;
     }
 
     public void logon(String account,String password) throws IOException {
-        HashMap<String, String> data = init("logon",account, password);
-        System.out.println(data.get("status"));
-        System.out.println(data.get("message"));
-        close();
+        MessageBean bean = init("logon", account, password);
+        HashMap<String, String> data = HandleMessage.handle(bean,this);
     }
 
     public void changPwd(String account,String password,String pwdNew) throws IOException {
-        HashMap<String, String> data = init("changPwd", account, password, pwdNew);
-        System.out.println(data.get("status"));
-        System.out.println(data.get("message"));
-        close();
+        MessageBean bean = init("changPwd", account, password, pwdNew);
+        HashMap<String, String> data = HandleMessage.handle(bean,this);
+        ConsoleMessageManger.send(data);
     }
 
+    public void list() throws IOException {
+        MessageBean bean = MessageUtil.buildMessage("list", null, account);
+        System.out.println(JSON.toJSONString(bean));
+        sendManager.send(bean);
+        MessageBean receive = receiveManager.getReceive(bean.getID());
+        HashMap<String, String> data = HandleMessage.handle(receive, this);
+        ConsoleMessageManger.send(data);
+    }
 
     public void close() throws IOException {
         sendManager.close();

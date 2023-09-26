@@ -27,7 +27,7 @@ public class HeartbeatManger implements Runnable{
         while (flag){
             try {
                 Thread.sleep(heartbeatTime * 1000);
-                MessageBean bean = MessageUtil.buildMessage("heart", new String[0], account);
+                MessageBean bean = MessageUtil.buildMessage("heart",null, account);
                 sendManager.send(bean);
             } catch (InterruptedException | IOException e) {
                 throw new RuntimeException(e);

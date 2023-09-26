@@ -21,8 +21,8 @@ public class SendManager {
     public void send(MessageBean bean) throws IOException {
         String data = JSON.toJSONString(bean);
         writer.write(data);
+        writer.write("\n");
         writer.flush();
-        socket.shutdownOutput();
     }
 
     public void close() throws IOException {

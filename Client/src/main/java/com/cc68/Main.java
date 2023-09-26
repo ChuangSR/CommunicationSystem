@@ -67,7 +67,30 @@ public class Main {
         client.changPwd(account,password,pwdNew);
     }
 
-    public static void menu(){
+    public static void menu() throws IOException {
+       while (true){
+           System.out.println("==================================");
+           System.out.println("=           1  查看在线用户        =");
+           System.out.println("=           3  私聊               =");
+           System.out.println("=           3  群聊               =");
+           System.out.println("=           4  退出               =");
+           System.out.println("==================================");
+           int choose = scanner.nextInt();
+           switch (choose){
+               case 1:
+                   client.list();
+                   break;
+               case 2:
+                   inputError();
+                   break;
+               case 3:
+                   inputError();
+                   break;
+               case 4:
+                   client.close();
+                   return;
+           }
+       }
 
     }
 

@@ -16,6 +16,7 @@ public class ReceiveManager{
 
     private Socket accept = null;
 
+
     public ServerSocket getServerSocket() {
         return serverSocket;
     }
@@ -33,10 +34,9 @@ public class ReceiveManager{
         try {
             accept = serverSocket.accept();
             BufferedReader reader = new BufferedReader(new InputStreamReader(accept.getInputStream()));
-            String message;
-            while ((message =reader.readLine()) != null){
-                bean = JSON.parseObject(message, MessageBean.class);
-            }
+            String message = reader.readLine();
+            System.out.println(message);
+            bean = JSON.parseObject(message, MessageBean.class);
         } catch (IOException e) {
             e.printStackTrace();
         }

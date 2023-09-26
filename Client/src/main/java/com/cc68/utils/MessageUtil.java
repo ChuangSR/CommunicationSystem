@@ -22,9 +22,12 @@ public class MessageUtil {
             case "login" -> login(temp, data);
             case "logon" -> logon(temp, data);
             case "changPwd" -> changPwd(temp, data);
+            case "heart" -> heart(temp,data);
+            case "list" -> list(temp,data);
         }
         return bean;
     }
+
 
     //获取消息的ID
     private static String getID(String type,String account){
@@ -105,5 +108,13 @@ public class MessageUtil {
         temp.put("account",data[0]);
         temp.put("password",getMD5(data[1]));
         temp.put("pwdNew",getMD5(data[2]));
+    }
+
+    private static void list(HashMap<String,String> temp,String[] data){
+
+    }
+
+    private static void heart(HashMap<String, String> temp, String[] data) {
+
     }
 }

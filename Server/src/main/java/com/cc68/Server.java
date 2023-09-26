@@ -1,5 +1,6 @@
 package com.cc68;
 
+import com.alibaba.fastjson2.JSON;
 import com.cc68.beans.MessageBean;
 import com.cc68.beans.UserBean;
 import com.cc68.manager.HeartbeatManger;
@@ -67,6 +68,8 @@ public class Server {
     public void start() throws IOException {
         while (flage){
             MessageBean messageBean = receiveManager.listen();
+            System.out.println(JSON.toJSONString(messageBean));
+
             UserBean userBean;
             //判读是否为登录事件，改事件较为特殊
             if ("login".equals(messageBean.getType()) || "logon".equals(messageBean.getType())
@@ -79,9 +82,10 @@ public class Server {
             }
             MessageBean replyBean = HandleMessage.handle(messageBean, userBean,this);
             userBean.getSendManager().send(replyBean);
+            System.out.println("out");
 
             if ("logon".equals(messageBean.getType())||"changPwd".equals(messageBean.getType())
-            || "400".equals(replyBean.getData().get("status"))){
+            || ("login".equals(replyBean.getType())&&"400".equals(replyBean.getData().get("status")))){
                 userBean.close();
             }
         }

@@ -4,12 +4,14 @@ import com.alibaba.fastjson2.JSON;
 import com.cc68.Server;
 import com.cc68.beans.MessageBean;
 import com.cc68.beans.UserBean;
+import com.cc68.manager.UsersManager;
 import com.cc68.utils.MessageUtil;
 import com.cc68.utils.SqlUtil;
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.session.SqlSession;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * 用于处理各种类型的消息
@@ -22,9 +24,12 @@ public class HandleMessage {
             case "login" -> login(messageBean, userBean, server);
             case "logon" -> logon(messageBean, userBean, server);
             case "changPwd" -> changPwd(messageBean, userBean, server);
+            case "list" -> list(messageBean,userBean,server);
             default -> null;
         };
     }
+
+
 
     private static MessageBean login(MessageBean messageBean,UserBean userBean,Server server){
         //打开数据库连接
@@ -90,5 +95,15 @@ public class HandleMessage {
         }
         sqlSession.close();
         return MessageUtil.replyMessage(messageBean.getID(),"logon",data,server);
+    }
+
+    private static MessageBean list(MessageBean messageBean,UserBean userBean,Server server) {
+        UsersManager usersManager = server.getUsersManager();
+        ArrayList<UserBean> all = usersManager.getAll();
+        String[] data = new String[all.size()];
+        for (int i = 0;i < all.size();i++){
+            data[i] = all.get(i).getAccount();
+        }
+        return MessageUtil.replyMessage(messageBean.getID(),"list",data,server);
     }
 }

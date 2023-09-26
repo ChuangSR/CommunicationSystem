@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.HashMap;
 
 public class ReceiveManager implements Runnable{
     private Client client;
@@ -31,14 +32,14 @@ public class ReceiveManager implements Runnable{
     @Override
     public void run() {
         try {
-            String message = null;
+            String message;
             while (flag&&(message = reader.readLine())!=null){
                 //存储数据到数据库
                 MessageBean bean = JSON.parseObject(message, MessageBean.class);
                 MessageUtil.saveMessage(bean, client.getConfig().get("account").toString());
                 //向控制台发送数据
-                System.out.println(message);
-                HandleMessage.handle(bean,client);
+                HashMap<String, String> data = HandleMessage.handle(bean, client);
+                ConsoleMessageManger.send(data);
 
             }
         } catch (IOException e) {

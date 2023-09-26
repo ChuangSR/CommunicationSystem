@@ -11,16 +11,14 @@ import java.util.ArrayList;
 public class UsersManager {
     private final ArrayList<UserBean> beans = new ArrayList<>(100);
 
-    private int online = 0;
 
 
 
-    public void addUser(UserBean bean){
+    public synchronized void addUser(UserBean bean){
         beans.add(bean);
-        online++;
     }
 
-    public UserBean getUser(String account){
+    public synchronized UserBean getUser(String account){
         UserBean reply = null;
         for (UserBean bean:beans){
             if (bean.getAccount().equals(account)){
@@ -31,17 +29,16 @@ public class UsersManager {
         return reply;
     }
 
-    public ArrayList<UserBean> getAll(){
+    public synchronized ArrayList<UserBean> getAll(){
         return beans;
     }
 
-    public void deleteUser( UserBean bean) throws IOException {
+    public synchronized void deleteUser( UserBean bean) throws IOException {
         bean.close();
         beans.remove(bean);
-        online--;
     }
-    public int getOnline(){
-        return online;
+    public synchronized int getOnline(){
+        return beans.size();
     }
 
 }
