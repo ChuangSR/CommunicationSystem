@@ -82,7 +82,6 @@ public class Server {
             }
             MessageBean replyBean = HandleMessage.handle(messageBean, userBean,this);
             userBean.getSendManager().send(replyBean);
-            System.out.println("out");
 
             if ("logon".equals(messageBean.getType())||"changPwd".equals(messageBean.getType())
             || ("login".equals(replyBean.getType())&&"400".equals(replyBean.getData().get("status")))){
