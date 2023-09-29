@@ -10,9 +10,13 @@ public class ConsoleMessageManger {
             case "login" -> login(message);
             case "logon" -> logon(message);
             case "list" -> list(message);
+            case "offline" -> offline(message);
         }
     }
 
+    private static void offline(HashMap<String, String> message) {
+
+    }
 
 
     private static void login(HashMap<String, String> message) {

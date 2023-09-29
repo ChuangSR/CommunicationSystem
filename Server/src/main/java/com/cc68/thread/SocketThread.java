@@ -1,4 +1,4 @@
-﻿package com.cc68.thread;
+package com.cc68.thread;
 
 import com.alibaba.fastjson2.JSON;
 import com.cc68.Server;
@@ -12,9 +12,11 @@ import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.net.Socket;
 
-public class SocketThread implements Runnable, Serializable {
-    private transient Server server;
-    private transient UserBean userBean;
+public class SocketThread implements Runnable {
+    private Server server;
+    private UserBean userBean;
+
+    private Socket socket;
     private BufferedReader reader;
     private boolean flag = true;
 
@@ -40,8 +42,10 @@ public class SocketThread implements Runnable, Serializable {
 
     public SocketThread(Server server, Socket socket,UserBean userBean) throws IOException {
         this.server = server;
-        reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        this.socket = socket;
         this.userBean = userBean;
+        reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        linkTime = System.currentTimeMillis()/1000;
     }
 
     @Override
@@ -49,12 +53,16 @@ public class SocketThread implements Runnable, Serializable {
         while (flag){
             try {
                 String message = reader.readLine();
+                if (message == null){
+                    continue;
+                }
                 refresh();
                 MessageBean bean = JSON.parseObject(message, MessageBean.class);
+                System.out.println(message);
                 MessageBean replyBean = HandleMessage.handle(bean, userBean,server);
                 userBean.getSendManager().send(replyBean);
             } catch (IOException e) {
-                e.printStackTrace();
+                return;
             }
         }
     }
@@ -66,7 +74,9 @@ public class SocketThread implements Runnable, Serializable {
     public long getLinkTime(){
         return linkTime;
     }
-    public void close(){
+    public void close() throws IOException {
         flag =false;
+        reader.close();
+        socket.close();
     }
 }

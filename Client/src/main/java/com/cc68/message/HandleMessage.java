@@ -19,8 +19,13 @@ public class HandleMessage {
             case "login" -> login(bean, temp, client);
             case "logon" -> logon(bean, temp, client);
             case "list" -> list(bean,temp,client);
+            case "offline" -> offline(bean,temp,client);
         }
         return temp;
+    }
+
+    private static void offline(MessageBean bean, HashMap<String, String> temp, Client client) throws IOException {
+        client.offline();
     }
 
 

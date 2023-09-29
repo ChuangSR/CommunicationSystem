@@ -36,7 +36,7 @@ public class ReceiveManager implements Runnable{
             while (flag&&(message = reader.readLine())!=null){
                 //存储数据到数据库
                 MessageBean bean = JSON.parseObject(message, MessageBean.class);
-                MessageUtil.saveMessage(bean, client.getConfig().get("account").toString());
+//                MessageUtil.saveMessage(bean, client.getConfig().get("account").toString());
                 //向控制台发送数据
                 HashMap<String, String> data = HandleMessage.handle(bean, client);
                 ConsoleMessageManger.send(data);
@@ -61,8 +61,10 @@ public class ReceiveManager implements Runnable{
                 //返回需要的数据
                 return bean;
             }else {
+                HashMap<String, String> data = HandleMessage.handle(bean, client);
+                ConsoleMessageManger.send(data);
                 //在非需要的消息的情况下存储消息
-                MessageUtil.saveMessage(bean, client.getConfig().get("account").toString());
+//                MessageUtil.saveMessage(bean, client.getConfig().get("account").toString());
                 getReceive(ID);
             }
         } catch (IOException e) {

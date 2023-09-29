@@ -12,13 +12,11 @@ public class UserBean {
     private String account;
     private String password;
 
-
     private SendManager sendManager;
-
 
     private long heartbeat;
 
-
+    private boolean threadStatus = true;
     public UserBean(){}
 
     public UserBean(String account, String passwowrd) {
@@ -61,6 +59,14 @@ public class UserBean {
 
     public long getHeartbeat() {
         return heartbeat;
+    }
+
+    public boolean isThreadStatus() {
+        return threadStatus;
+    }
+
+    public void setThreadStatus(boolean threadStatus) {
+        this.threadStatus = threadStatus;
     }
 
     public void refresh(){

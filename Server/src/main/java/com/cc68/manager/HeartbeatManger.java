@@ -32,6 +32,11 @@ public class HeartbeatManger implements Runnable{
         while (flag){
             MessageBean bean = receiveManager.listen();
             usersManager.getUser(bean.getOriginator()).refresh();
+            try {
+                receiveManager.getAccept().close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

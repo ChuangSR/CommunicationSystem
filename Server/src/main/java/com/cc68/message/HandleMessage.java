@@ -5,12 +5,14 @@ import com.cc68.Server;
 import com.cc68.beans.MessageBean;
 import com.cc68.beans.UserBean;
 import com.cc68.manager.UsersManager;
+import com.cc68.thread.SocketThread;
 import com.cc68.utils.MessageUtil;
 import com.cc68.utils.SqlUtil;
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.session.SqlSession;
 
 import java.io.IOException;
+import java.net.Socket;
 import java.util.ArrayList;
 
 /**
@@ -45,6 +47,14 @@ public class HandleMessage {
             data[1] = "successful login";
             //向用户管理器添加数据
             server.getUsersManager().addUser(userBean);
+            Socket socket = server.getReceiveManager().getAccept();
+            SocketThread thread;
+            try {
+                thread = new SocketThread(server, socket, userBean);
+                server.getPool().add(thread);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }else {
             data[0] = "400";
             data[1] = "failed login";

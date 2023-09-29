@@ -8,6 +8,8 @@ import com.cc68.manager.ReceiveManager;
 import com.cc68.manager.UsersManager;
 import com.cc68.manager.Wrecker;
 import com.cc68.message.HandleMessage;
+import com.cc68.thread.SocketPool;
+import com.cc68.thread.SocketThread;
 import org.apache.ibatis.io.Resources;
 
 import java.io.IOException;
@@ -31,8 +33,13 @@ public class Server {
 
     private Wrecker wrecker;
 
+    private SocketPool pool;
 
     private boolean flage = true;
+
+    public SocketPool getPool() {
+        return pool;
+    }
 
     public Properties getConfig() {
         return config;
@@ -50,24 +57,34 @@ public class Server {
         this.usersManager = usersManager;
     }
 
+    public ReceiveManager getReceiveManager() {
+        return receiveManager;
+    }
+
     public Server() throws IOException {
         this.config = Resources.getResourceAsProperties("config.properties");
         usersManager = new UsersManager();
-        receiveManager = new ReceiveManager(config,"serverPort");
+        receiveManager = new ReceiveManager(this,config,"serverPort");
         heartbeatManger = new HeartbeatManger(config,usersManager);
         wrecker = new Wrecker(usersManager,config);
-
+        pool = new SocketPool(this,Integer.parseInt(config.getProperty("poolMax")),60);
 
         Thread heartThread = new Thread(heartbeatManger);
         heartThread.start();
 
         Thread wreckerThread = new Thread(wrecker);
         wreckerThread.start();
+
+        Thread poolThread = new Thread(pool);
+        poolThread.start();
     }
 
     public void start() throws IOException {
         while (flage){
             MessageBean messageBean = receiveManager.listen();
+            if ("online".equals(messageBean.getType())){
+                continue;
+            }
             System.out.println(JSON.toJSONString(messageBean));
 
             UserBean userBean;
@@ -81,10 +98,13 @@ public class Server {
                 userBean = usersManager.getUser(messageBean.getOriginator());
             }
             MessageBean replyBean = HandleMessage.handle(messageBean, userBean,this);
+            System.out.println(JSON.toJSONString(replyBean));
             userBean.getSendManager().send(replyBean);
 
             if ("logon".equals(messageBean.getType())||"changPwd".equals(messageBean.getType())
             || ("login".equals(replyBean.getType())&&"400".equals(replyBean.getData().get("status")))){
+                SocketThread thread = pool.getThread(userBean);
+                thread.close();
                 userBean.close();
             }
         }

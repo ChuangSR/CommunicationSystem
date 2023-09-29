@@ -7,6 +7,8 @@
     <file url="file://$PROJECT_DIR$/Client/src/main/java/te.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Client/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Server/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Server/src/main/java/com/cc68/thread/SocketPool.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Server/src/main/java/com/cc68/thread/SocketThread.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Server/src/main/resources" charset="UTF-8" />
     <file url="PROJECT" charset="UTF-8" />
   </component>

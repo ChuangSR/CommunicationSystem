@@ -9,8 +9,14 @@ import java.util.Properties;
 public class HeartbeatManger implements Runnable{
     private String account;
     private SendManager sendManager;
+
+    private String heartbeatHost;
+
+    private String heartbeatPort;
+
     //心跳的间隔时间
     private int heartbeatTime;
+
 
     private boolean flag = true;
 
@@ -18,8 +24,9 @@ public class HeartbeatManger implements Runnable{
 
     public HeartbeatManger(Properties config) throws IOException {
         account = config.getProperty("account");
-        sendManager = new SendManager(config,"heartbeatHost","heartbeatPort");
         heartbeatTime = Integer.parseInt(config.getProperty("heartbeatTime"));
+        heartbeatHost = config.getProperty("heartbeatHost");
+        heartbeatPort = config.getProperty("heartbeatPort");
     }
 
     @Override
@@ -27,8 +34,10 @@ public class HeartbeatManger implements Runnable{
         while (flag){
             try {
                 Thread.sleep(heartbeatTime * 1000);
+                sendManager = new SendManager(heartbeatHost,heartbeatPort);
                 MessageBean bean = MessageUtil.buildMessage("heart",null, account);
                 sendManager.send(bean);
+                sendManager.close(); 
             } catch (InterruptedException | IOException e) {
                 throw new RuntimeException(e);
             }

@@ -24,8 +24,13 @@ public class MessageUtil {
             case "changPwd" -> changPwd(temp, data);
             case "heart" -> heart(temp,data);
             case "list" -> list(temp,data);
+            case "online" -> online(temp,data);
         }
         return bean;
+    }
+
+    private static void online(HashMap<String, String> temp, String[] data) {
+        temp.put("time",data[0]);
     }
 
 

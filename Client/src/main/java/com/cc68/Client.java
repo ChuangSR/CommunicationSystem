@@ -29,6 +29,8 @@ public class Client {
 
     private HeartbeatManger heartbeatManger;
 
+    private boolean status = true;
+
     public void setAccount(String account) {
         this.account = account;
     }
@@ -85,10 +87,11 @@ public class Client {
         this.socket = new Socket(config.getProperty("ServerHost"),
                 Integer.parseInt(config.getProperty("ServerPort")));
         //创建发送管理器
-        sendManager = new SendManager(socket);
+        sendManager = new SendManager(this,socket);
         //存储账户名
         config.setProperty("account",data[0]);
         MessageBean bean = MessageUtil.buildMessage(type, data, account);
+        System.out.println(JSON.toJSONString(bean));
         //发送数据
         sendManager.send(bean);
         //构建接收器
@@ -119,6 +122,30 @@ public class Client {
         ConsoleMessageManger.send(data);
     }
 
+    public void online() throws IOException {
+        this.socket = new Socket(config.getProperty("ServerHost"),
+                Integer.parseInt(config.getProperty("ServerPort")));
+        //创建发送管理器
+        sendManager = new SendManager(this,socket);
+        //构建接收器
+        receiveManager = new ReceiveManager(this);
+
+        Thread receiveThread = new Thread(receiveManager);
+        receiveThread.start();
+
+        String[] data = {MessageUtil.getTime()};
+        MessageBean bean = MessageUtil.buildMessage("online", data, account);
+
+        sendManager.send(bean);
+    }
+
+    public void offline() throws IOException {
+        receiveManager.close();
+        sendManager.close();;
+        socket.close();
+        status = false;
+    }
+
     public void list() throws IOException {
         MessageBean bean = MessageUtil.buildMessage("list", null, account);
         System.out.println(JSON.toJSONString(bean));
@@ -136,5 +163,7 @@ public class Client {
         }
     }
 
-
+    public boolean getStatus(){
+        return status;
+    }
 }
