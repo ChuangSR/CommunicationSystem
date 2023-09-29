@@ -85,7 +85,6 @@ public class Server {
             if ("online".equals(messageBean.getType())){
                 continue;
             }
-            System.out.println(JSON.toJSONString(messageBean));
 
             UserBean userBean;
             //判读是否为登录事件，改事件较为特殊
@@ -98,14 +97,15 @@ public class Server {
                 userBean = usersManager.getUser(messageBean.getOriginator());
             }
             MessageBean replyBean = HandleMessage.handle(messageBean, userBean,this);
-            System.out.println(JSON.toJSONString(replyBean));
             userBean.getSendManager().send(replyBean);
 
             if ("logon".equals(messageBean.getType())||"changPwd".equals(messageBean.getType())
             || ("login".equals(replyBean.getType())&&"400".equals(replyBean.getData().get("status")))){
                 SocketThread thread = pool.getThread(userBean);
-                thread.close();
                 userBean.close();
+                if (thread != null){
+                    thread.close();
+                }
             }
         }
     }

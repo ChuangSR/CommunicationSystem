@@ -58,7 +58,6 @@ public class SocketThread implements Runnable {
                 }
                 refresh();
                 MessageBean bean = JSON.parseObject(message, MessageBean.class);
-                System.out.println(message);
                 MessageBean replyBean = HandleMessage.handle(bean, userBean,server);
                 userBean.getSendManager().send(replyBean);
             } catch (IOException e) {

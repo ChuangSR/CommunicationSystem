@@ -4,6 +4,8 @@ package com.cc68.beans;
  * 存储数据库数据的类
  */
 public class MessageDatabaseBean {
+    private String ID;
+
     private String originator;
 
     private String receiver;
@@ -22,6 +24,14 @@ public class MessageDatabaseBean {
         this.message = message;
         this.time = time;
         this.type = type;
+    }
+
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
     }
 
     public String getOriginator() {

@@ -4,8 +4,9 @@ import com.alibaba.fastjson2.JSON;
 import com.cc68.Client;
 import com.cc68.beans.MessageBean;
 import com.cc68.message.HandleMessage;
-import com.cc68.message.MessagePair;
 import com.cc68.utils.MessageUtil;
+import com.cc68.utils.SqlUtil;
+import org.apache.ibatis.session.SqlSession;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,7 +22,6 @@ public class ReceiveManager implements Runnable{
     private boolean flag = true;
 
     //用于存储服务器对于消息的回复，普通的消息将不会被存储
-    private MessagePair messagePair;
 
     public ReceiveManager(Client client) throws IOException {
         this.socket = client.getSocket();
@@ -48,11 +48,11 @@ public class ReceiveManager implements Runnable{
     }
 
     /**
-     * 一个通过id获取数据的函数
+     * 一个通过id获取数据的函数,在未登录时使用
      * @param ID 需要数据的id
      * @return
      */
-    public MessageBean getReceive(String ID){
+    public MessageBean getReceiveFrontLogin(String ID){
         String message = null;
         try {
             message = reader.readLine();
@@ -64,12 +64,18 @@ public class ReceiveManager implements Runnable{
                 HashMap<String, String> data = HandleMessage.handle(bean, client);
                 ConsoleMessageManger.send(data);
                 //在非需要的消息的情况下存储消息
-//                MessageUtil.saveMessage(bean, client.getConfig().get("account").toString());
-                getReceive(ID);
+                MessageUtil.saveMessage(bean, client.getConfig().get("account").toString());
+                getReceiveFrontLogin(ID);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return null;
+    }
+
+    public MessageBean getReceiveAfterLogin(String ID){
+        SqlSession sqlSession = SqlUtil.getSqlSession();
+
         return null;
     }
 

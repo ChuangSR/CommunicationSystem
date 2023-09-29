@@ -11,11 +11,11 @@
        insert into messages values ("服务器","客户端","测试","2022.9.3");
    </insert>
 
-    <select id="se">
-        select * from messages where type = "sada";
+    <select id="readMessage">
+        select ID,originator,receiver,message,time,type from messages where ID = {#ID};
     </select>
 
     <insert id="insert_data">
-        insert into messages values (#{originator},#{receiver},#{message},#{time},#{type});
+        insert into messages values (#{ID},#{originator},#{receiver},#{message},#{time},#{type});
     </insert>
 </mapper>

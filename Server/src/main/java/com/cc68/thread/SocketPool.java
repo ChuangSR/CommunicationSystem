@@ -36,12 +36,12 @@ public class SocketPool implements Runnable{
         while (flag){
             try {
                 Thread.sleep(1000);
-                checkThread();
+//                checkThread();
             } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+                e.printStackTrace();}
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
         }
     }
 
@@ -52,7 +52,6 @@ public class SocketPool implements Runnable{
      */
 
     public void add(SocketThread socketThread) throws IOException {
-        System.out.println("run");
         Thread thread = new Thread(socketThread);
         thread.start();
         if (pool.size() == MAX){

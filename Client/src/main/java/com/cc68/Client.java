@@ -91,13 +91,12 @@ public class Client {
         //存储账户名
         config.setProperty("account",data[0]);
         MessageBean bean = MessageUtil.buildMessage(type, data, account);
-        System.out.println(JSON.toJSONString(bean));
         //发送数据
         sendManager.send(bean);
         //构建接收器
         receiveManager = new ReceiveManager(this);
         //监听服务器对登录消息的返回
-        MessageBean receive = receiveManager.getReceive(bean.getID());
+        MessageBean receive = receiveManager.getReceiveFrontLogin(bean.getID());
 
         return receive;
     }
@@ -148,9 +147,9 @@ public class Client {
 
     public void list() throws IOException {
         MessageBean bean = MessageUtil.buildMessage("list", null, account);
-        System.out.println(JSON.toJSONString(bean));
         sendManager.send(bean);
-        MessageBean receive = receiveManager.getReceive(bean.getID());
+        MessageBean receive = receiveManager.getReceiveFrontLogin(bean.getID());
+        System.out.println(JSON.toJSONString(receive));
         HashMap<String, String> data = HandleMessage.handle(receive, this);
         ConsoleMessageManger.send(data);
     }

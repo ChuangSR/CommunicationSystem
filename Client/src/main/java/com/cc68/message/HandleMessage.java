@@ -34,14 +34,15 @@ public class HandleMessage {
         if ("200".equals(data.get("status"))){
             temp.put("status","true");
             //运行心跳管理器
-            client.setHeartbeatManger(new HeartbeatManger(client.getConfig()));
-            Thread heartbeatThread = new Thread(client.getHeartbeatManger());
-            heartbeatThread.start();
+//            client.setHeartbeatManger(new HeartbeatManger(client.getConfig()));
+//            Thread heartbeatThread = new Thread(client.getHeartbeatManger());
+//            heartbeatThread.start();
 
             //运行接收器
             Thread receiveThread = new Thread(client.getReceiveManager());
             receiveThread.start();
 
+            client.getConfig().setProperty("server",bean.getOriginator());
             temp.put("message",data.get("message"));
         }else if ("400".equals(data.get("status"))){
             temp.put("status","false");

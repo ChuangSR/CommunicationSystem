@@ -74,10 +74,12 @@ public class MessageUtil {
      */
     private static MessageDatabaseBean toMessageDatabaseBean(MessageBean messageBean,String account){
         MessageDatabaseBean bean = new MessageDatabaseBean();
+        bean.setID(messageBean.getID());
         bean.setOriginator(messageBean.getOriginator());
         bean.setReceiver(account);
         bean.setType(messageBean.getType());
-        bean.setMessage(messageBean.getData().get("message"));
+        bean.setMessage(JSON.toJSONString(messageBean.getData()));
+        bean.setTime(getTime());
         return bean;
     }
 
@@ -93,6 +95,10 @@ public class MessageUtil {
         session.insert("insert_data",mdbean);
         session.commit();
         session.close();
+    }
+
+    public static void readMessage(String ID){
+
     }
     public static String getTime(){
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
