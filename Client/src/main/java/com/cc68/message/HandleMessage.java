@@ -6,6 +6,7 @@ import com.cc68.beans.MessageBean;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * 用于处理消息
@@ -71,12 +72,15 @@ public class HandleMessage {
 
     private static void list(MessageBean bean, HashMap<String, String> temp, Client client) {
         HashMap<String, String> data = bean.getData();
-        Collection<String> values = data.values();
+        Set<String> keySet = data.keySet();
         int i = 0;
-        for (String value:values) {
+        for (String key:keySet) {
+            if ("flag".equals(key)){
+                continue;
+            }
             StringBuilder builder = new StringBuilder();
-            builder.append(bean.getOriginator()).append(":").append(value);
-            temp.put(Integer.toString(i),builder.toString());
+            builder.append(bean.getOriginator()).append(":").append(data.get(key));
+            temp.put(key,builder.toString());
         }
     }
 }
