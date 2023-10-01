@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.Scanner;
 
 public class Client {
     private String account;
@@ -152,6 +153,22 @@ public class Client {
 //        System.out.println(JSON.toJSONString(receive));
 //        HashMap<String, String> data = HandleMessage.handle(receive, this);
 //        ConsoleMessageManger.send(data);
+    }
+
+    public void sideText() throws IOException {
+        System.out.print("请输入用户账号:");
+        Scanner scanner = new Scanner(System.in);
+        String account = scanner.next();
+        System.out.println("输入!exit退出");
+        while (true){
+            String message = scanner.next();
+            if ("!exit".equals(message)){
+                break;
+            }
+            String[] data = {account,message};
+            MessageBean bean = MessageUtil.buildMessage("sideText",data,this.account);
+            sendManager.send(bean);
+        }
     }
 
     public void close() throws IOException {

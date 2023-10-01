@@ -19,8 +19,15 @@ public class HandleMessage {
             case "logon" -> logon(bean, temp, client);
             case "list" -> list(bean,temp,client);
             case "offline" -> offline(bean,temp,client);
+            case "sideText" -> sideText(bean,temp,client);
         }
         return temp;
+    }
+
+    private static void sideText(MessageBean bean, HashMap<String, String> temp, Client client) {
+        HashMap<String, String> data = bean.getData();
+        temp.put("originator",data.get("originator"));
+        temp.put("message",data.get("message"));
     }
 
     private static void offline(MessageBean bean, HashMap<String, String> temp, Client client) throws IOException {

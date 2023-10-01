@@ -59,7 +59,10 @@ public class SocketThread implements Runnable {
                 refresh();
                 MessageBean bean = JSON.parseObject(message, MessageBean.class);
                 MessageBean replyBean = HandleMessage.handle(bean, userBean,server);
-                userBean.getSendManager().send(replyBean);
+                boolean flag = Boolean.parseBoolean(replyBean.getData().get("flag"));
+                if (flag){
+                    userBean.getSendManager().send(replyBean);
+                }
             } catch (IOException e) {
                 return;
             }

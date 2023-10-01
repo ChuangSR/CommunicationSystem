@@ -70,7 +70,7 @@ public class Main {
     public static void menu() throws IOException, InterruptedException {
         System.out.println("==================================");
         System.out.println("=           1  查看在线用户        =");
-        System.out.println("=           3  私聊               =");
+        System.out.println("=           2  私聊               =");
         System.out.println("=           3  群聊               =");
         System.out.println("=           4  退出               =");
         System.out.println("==================================");
@@ -81,7 +81,7 @@ public class Main {
                    client.list();
                    break;
                case 2:
-                   inputError();
+                   client.sideText();
                    break;
                case 3:
                    inputError();

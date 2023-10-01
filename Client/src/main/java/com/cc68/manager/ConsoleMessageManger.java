@@ -12,7 +12,14 @@ public class ConsoleMessageManger {
             case "logon" -> logon(message);
             case "list" -> list(message);
             case "offline" -> offline(message);
+            case "sideText" -> sideText(message);
         }
+    }
+
+    private static void sideText(HashMap<String, String> message) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(message.get("originator")).append(":").append(message.get("message"));
+        System.out.println(builder);
     }
 
     private static void offline(HashMap<String, String> message) {

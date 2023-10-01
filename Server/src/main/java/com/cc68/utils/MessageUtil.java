@@ -117,21 +117,25 @@ public class MessageUtil {
     }
 
     private static void login(HashMap<String,String> temp,String[] data){
+        temp.put("flag","true");
         temp.put("status",data[0]);
         temp.put("message",data[1]);
     }
 
     private static void logon(HashMap<String,String> temp,String[] data){
+        temp.put("flag","true");
         temp.put("status",data[0]);
         temp.put("message",data[1]);
     }
 
     private static void changPwd(HashMap<String,String> temp,String[] data){
+        temp.put("flag","true");
         temp.put("status",data[0]);
         temp.put("message",data[1]);
     }
 
     private static void list(HashMap<String, String> temp, String[] data) {
+        temp.put("flag","true");
         for (int i = 0;i < data.length;i++){
             temp.put(Integer.toString(i),data[i]);
         }

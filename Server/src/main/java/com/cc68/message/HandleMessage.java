@@ -14,6 +14,7 @@ import org.apache.ibatis.session.SqlSession;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * 用于处理各种类型的消息
@@ -21,16 +22,27 @@ import java.util.ArrayList;
  *      普通消息等
  */
 public class HandleMessage {
-    public static MessageBean handle(MessageBean messageBean, UserBean userBean, Server server){
+    public static MessageBean handle(MessageBean messageBean, UserBean userBean, Server server) throws IOException {
         return switch (messageBean.getType()) {
             case "login" -> login(messageBean, userBean, server);
             case "logon" -> logon(messageBean, userBean, server);
             case "changPwd" -> changPwd(messageBean, userBean, server);
             case "list" -> list(messageBean,userBean,server);
+            case "sideText" -> sideText(messageBean,userBean,server);
             default -> null;
         };
     }
 
+    private static MessageBean sideText(MessageBean messageBean, UserBean userBean, Server server) throws IOException {
+        HashMap<String, String> data = messageBean.getData();
+        //flag属性表示是否回复
+        data.put("flag","false");
+        data.put("originator",messageBean.getOriginator());
+        String receiver = data.get("receiver");
+        UserBean receiverUser = server.getUsersManager().getUser(receiver);
+        receiverUser.getSendManager().send(messageBean);
+        return messageBean;
+    }
 
 
     private static MessageBean login(MessageBean messageBean,UserBean userBean,Server server){
@@ -59,10 +71,9 @@ public class HandleMessage {
             data[0] = "400";
             data[1] = "failed login";
         }
-        MessageBean bean = MessageUtil.replyMessage(messageBean.getID(), "login", data, server);
         //构建返回数据
         sqlSession.close();
-        return bean;
+        return MessageUtil.replyMessage(messageBean.getID(), "login", data, server);
     }
 
     private static MessageBean logon(MessageBean messageBean,UserBean userBean,Server server){

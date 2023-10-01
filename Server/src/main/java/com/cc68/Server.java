@@ -97,7 +97,11 @@ public class Server {
                 userBean = usersManager.getUser(messageBean.getOriginator());
             }
             MessageBean replyBean = HandleMessage.handle(messageBean, userBean,this);
-            userBean.getSendManager().send(replyBean);
+
+            boolean flag = Boolean.parseBoolean(replyBean.getData().get("flag"));
+            if (flag){
+                userBean.getSendManager().send(replyBean);
+            }
 
             if ("logon".equals(messageBean.getType())||"changPwd".equals(messageBean.getType())
             || ("login".equals(replyBean.getType())&&"400".equals(replyBean.getData().get("status")))){

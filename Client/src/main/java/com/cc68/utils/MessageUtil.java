@@ -24,8 +24,14 @@ public class MessageUtil {
             case "heart" -> heart(temp,data);
             case "list" -> list(temp,data);
             case "online" -> online(temp,data);
+            case "sideText" -> sideText(temp,data);
         }
         return bean;
+    }
+
+    private static void sideText(HashMap<String, String> temp, String[] data) {
+        temp.put("receiver",data[0]);
+        temp.put("message",data[1]);
     }
 
     private static void online(HashMap<String, String> temp, String[] data) {
