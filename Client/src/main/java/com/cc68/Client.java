@@ -145,13 +145,13 @@ public class Client {
         status = false;
     }
 
-    public void list() throws IOException {
+    public void list() throws IOException, InterruptedException {
         MessageBean bean = MessageUtil.buildMessage("list", null, account);
         sendManager.send(bean);
-        MessageBean receive = receiveManager.getReceiveFrontLogin(bean.getID());
-        System.out.println(JSON.toJSONString(receive));
-        HashMap<String, String> data = HandleMessage.handle(receive, this);
-        ConsoleMessageManger.send(data);
+//        MessageBean receive = receiveManager.getReceiveAfterLogin(bean.getID());
+//        System.out.println(JSON.toJSONString(receive));
+//        HashMap<String, String> data = HandleMessage.handle(receive, this);
+//        ConsoleMessageManger.send(data);
     }
 
     public void close() throws IOException {

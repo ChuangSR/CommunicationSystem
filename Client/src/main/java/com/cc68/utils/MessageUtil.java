@@ -1,7 +1,6 @@
 package com.cc68.utils;
 
 import com.alibaba.fastjson2.JSON;
-import com.cc68.Client;
 import com.cc68.beans.MessageBean;
 import com.cc68.beans.MessageDatabaseBean;
 import org.apache.ibatis.session.SqlSession;
@@ -83,6 +82,16 @@ public class MessageUtil {
         return bean;
     }
 
+    private static MessageBean toMessageBean(MessageDatabaseBean messageDatabaseBean){
+        MessageBean bean = new MessageBean();
+        bean.setID(messageDatabaseBean.getID());
+        bean.setOriginator(messageDatabaseBean.getOriginator());
+        bean.setType(messageDatabaseBean.getType());
+        HashMap map = JSON.parseObject(messageDatabaseBean.getMessage(), HashMap.class);
+        bean.setData(map);
+        return bean;
+    }
+
     /**
      * 存储消息到数据库
      * @param bean 被发送的消息
@@ -97,8 +106,13 @@ public class MessageUtil {
         session.close();
     }
 
-    public static void readMessage(String ID){
-
+    public static MessageBean readMessage(String ID) throws InterruptedException {
+        SqlSession sqlSession = SqlUtil.getSqlSession();
+        Thread.sleep(1000);
+        MessageDatabaseBean messageDatabaseBean = sqlSession.selectOne(ID, MessageDatabaseBean.class);
+        MessageBean bean = toMessageBean(messageDatabaseBean);
+        sqlSession.close();
+        return bean;
     }
     public static String getTime(){
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");

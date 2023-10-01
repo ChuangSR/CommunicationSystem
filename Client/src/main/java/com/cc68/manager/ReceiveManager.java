@@ -19,6 +19,12 @@ public class ReceiveManager implements Runnable{
     private Socket socket;
     private BufferedReader reader;
 
+    private Thread main;
+
+    public void setMain(Thread main) {
+        this.main = main;
+    }
+
     private boolean flag = true;
 
     //用于存储服务器对于消息的回复，普通的消息将不会被存储
@@ -36,11 +42,10 @@ public class ReceiveManager implements Runnable{
             while (flag&&(message = reader.readLine())!=null){
                 //存储数据到数据库
                 MessageBean bean = JSON.parseObject(message, MessageBean.class);
-//                MessageUtil.saveMessage(bean, client.getConfig().get("account").toString());
+                MessageUtil.saveMessage(bean, client.getConfig().get("account").toString());
                 //向控制台发送数据
                 HashMap<String, String> data = HandleMessage.handle(bean, client);
                 ConsoleMessageManger.send(data);
-
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -73,10 +78,9 @@ public class ReceiveManager implements Runnable{
         return null;
     }
 
-    public MessageBean getReceiveAfterLogin(String ID){
-        SqlSession sqlSession = SqlUtil.getSqlSession();
-
-        return null;
+    public MessageBean getReceiveAfterLogin(String ID) throws InterruptedException {
+        MessageBean bean = MessageUtil.readMessage(ID);
+        return bean;
     }
 
     public void close() throws IOException {

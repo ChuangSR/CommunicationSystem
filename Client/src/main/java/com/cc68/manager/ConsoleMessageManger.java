@@ -2,6 +2,7 @@ package com.cc68.manager;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Set;
 
 public class ConsoleMessageManger {
     public static void send(HashMap<String,String> message){
@@ -30,9 +31,12 @@ public class ConsoleMessageManger {
 
 
     private static void list(HashMap<String, String> message) {
-        Collection<String> values = message.values();
-        for (String temp:values){
-            System.out.println(temp);
+        Set<String> keySet = message.keySet();
+        for (String key : keySet){
+            if ("type".equals(key)){
+                continue;
+            }
+            System.out.println(message.get(key));
         }
     }
 }

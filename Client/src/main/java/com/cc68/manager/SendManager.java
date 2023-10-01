@@ -42,6 +42,23 @@ public class SendManager {
         writer.flush();
     }
 
+    public void send(MessageBean bean,boolean flag) throws IOException {
+        if (client != null&&!client.getStatus()){
+            client.online();
+        }
+        String data = JSON.toJSONString(bean);
+        writer.write(data);
+        writer.write("\n");
+        writer.flush();
+//        if (flag){
+//            try {
+//                Thread.sleep(10000);
+//            } catch (InterruptedException e) {
+//
+//            }
+//        }
+    }
+
     public void close() throws IOException {
         writer.close();
         socket.close();

@@ -7,7 +7,7 @@ public class Main {
     private static Client client;
     private static final Scanner scanner = new Scanner(System.in);
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         //关闭dos回显
         client = new Client();
 
@@ -34,7 +34,7 @@ public class Main {
         }
     }
 
-    public static void login() throws IOException {
+    public static void login() throws IOException, InterruptedException {
         System.out.println("==================================");
         System.out.print("请输入账号：");
         String account = scanner.next();
@@ -67,14 +67,14 @@ public class Main {
         client.changPwd(account,password,pwdNew);
     }
 
-    public static void menu() throws IOException {
+    public static void menu() throws IOException, InterruptedException {
+        System.out.println("==================================");
+        System.out.println("=           1  查看在线用户        =");
+        System.out.println("=           3  私聊               =");
+        System.out.println("=           3  群聊               =");
+        System.out.println("=           4  退出               =");
+        System.out.println("==================================");
        while (true){
-           System.out.println("==================================");
-           System.out.println("=           1  查看在线用户        =");
-           System.out.println("=           3  私聊               =");
-           System.out.println("=           3  群聊               =");
-           System.out.println("=           4  退出               =");
-           System.out.println("==================================");
            int choose = scanner.nextInt();
            switch (choose){
                case 1:

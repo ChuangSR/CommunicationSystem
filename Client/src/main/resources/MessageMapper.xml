@@ -11,7 +11,7 @@
        insert into messages values ("服务器","客户端","测试","2022.9.3");
    </insert>
 
-    <select id="readMessage">
+    <select id="readMessage" resultType="com.cc68.beans.MessageDatabaseBean">
         select ID,originator,receiver,message,time,type from messages where ID = {#ID};
     </select>
 

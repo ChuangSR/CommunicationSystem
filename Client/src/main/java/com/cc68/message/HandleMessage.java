@@ -2,7 +2,6 @@ package com.cc68.message;
 
 import com.cc68.Client;
 import com.cc68.beans.MessageBean;
-import com.cc68.manager.HeartbeatManger;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -38,6 +37,7 @@ public class HandleMessage {
 //            Thread heartbeatThread = new Thread(client.getHeartbeatManger());
 //            heartbeatThread.start();
 
+            client.getReceiveManager().setMain(Thread.currentThread());
             //运行接收器
             Thread receiveThread = new Thread(client.getReceiveManager());
             receiveThread.start();
