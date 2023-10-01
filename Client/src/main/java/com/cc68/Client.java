@@ -91,6 +91,7 @@ public class Client {
         sendManager = new SendManager(this,socket);
         //存储账户名
         config.setProperty("account",data[0]);
+        account = data[0];
         MessageBean bean = MessageUtil.buildMessage(type, data, account);
         //发送数据
         sendManager.send(bean);
@@ -167,6 +168,7 @@ public class Client {
             }
             String[] data = {account,message};
             MessageBean bean = MessageUtil.buildMessage("sideText",data,this.account);
+            System.out.println(JSON.toJSONString(bean));
             sendManager.send(bean);
         }
     }

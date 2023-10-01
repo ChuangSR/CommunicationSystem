@@ -61,7 +61,6 @@ public class SocketThread implements Runnable {
                 MessageBean replyBean = HandleMessage.handle(bean, userBean,server);
                 boolean flag = Boolean.parseBoolean(replyBean.getData().get("flag"));
                 if (flag){
-                    System.out.println(JSON.toJSONString(replyBean));
                     userBean.getSendManager().send(replyBean);
                 }
             } catch (IOException e) {
