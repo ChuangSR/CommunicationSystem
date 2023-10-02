@@ -168,7 +168,6 @@ public class Client {
             }
             String[] data = {account,message};
             MessageBean bean = MessageUtil.buildMessage("sideText",data,this.account);
-            System.out.println(JSON.toJSONString(bean));
             sendManager.send(bean);
         }
     }

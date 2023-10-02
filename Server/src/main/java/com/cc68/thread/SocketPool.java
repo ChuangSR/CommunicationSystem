@@ -36,12 +36,12 @@ public class SocketPool implements Runnable{
         while (flag){
             try {
                 Thread.sleep(1000);
-//                checkThread();
+                checkThread();
             } catch (InterruptedException e) {
-                e.printStackTrace();}
-//            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
 //                throw new RuntimeException(e);
-//            }
+            }
         }
     }
 
@@ -52,6 +52,11 @@ public class SocketPool implements Runnable{
      */
 
     public void add(SocketThread socketThread) throws IOException {
+        //为重复的登录做处理
+        SocketThread oldThread = getThread(socketThread.getUserBean());
+        if (oldThread!=null){
+            oldThread.close();
+        }
         Thread thread = new Thread(socketThread);
         thread.start();
         if (pool.size() == MAX){

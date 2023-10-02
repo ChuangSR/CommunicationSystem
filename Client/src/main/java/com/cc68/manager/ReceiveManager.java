@@ -42,13 +42,14 @@ public class ReceiveManager implements Runnable{
             while (flag&&(message = reader.readLine())!=null){
                 //存储数据到数据库
                 MessageBean bean = JSON.parseObject(message, MessageBean.class);
+                System.out.println(message);
                 MessageUtil.saveMessage(bean, client.getConfig().get("account").toString());
                 //向控制台发送数据
                 HashMap<String, String> data = HandleMessage.handle(bean, client);
                 ConsoleMessageManger.send(data);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+//            throw new RuntimeException(e);
         }
     }
 

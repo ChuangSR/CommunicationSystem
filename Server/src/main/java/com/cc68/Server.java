@@ -3,13 +3,11 @@ package com.cc68;
 import com.alibaba.fastjson2.JSON;
 import com.cc68.beans.MessageBean;
 import com.cc68.beans.UserBean;
-import com.cc68.manager.HeartbeatManger;
-import com.cc68.manager.ReceiveManager;
-import com.cc68.manager.UsersManager;
-import com.cc68.manager.Wrecker;
+import com.cc68.manager.*;
 import com.cc68.message.HandleMessage;
 import com.cc68.thread.SocketPool;
 import com.cc68.thread.SocketThread;
+import com.cc68.utils.MessageUtil;
 import org.apache.ibatis.io.Resources;
 
 import java.io.IOException;
@@ -97,6 +95,7 @@ public class Server {
                 userBean = usersManager.getUser(messageBean.getOriginator());
             }
             MessageBean replyBean = HandleMessage.handle(messageBean, userBean,this);
+            ConsoleMessageManger.send(HandleMessage.getLog());
 
             boolean flag = Boolean.parseBoolean(replyBean.getData().get("flag"));
             if (flag){

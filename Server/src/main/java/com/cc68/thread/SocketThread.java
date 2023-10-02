@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSON;
 import com.cc68.Server;
 import com.cc68.beans.MessageBean;
 import com.cc68.beans.UserBean;
+import com.cc68.manager.ConsoleMessageManger;
 import com.cc68.message.HandleMessage;
 
 import java.io.BufferedReader;
@@ -63,6 +64,7 @@ public class SocketThread implements Runnable {
                 if (flag){
                     userBean.getSendManager().send(replyBean);
                 }
+                ConsoleMessageManger.send(HandleMessage.getLog());
             } catch (IOException e) {
                 return;
             }

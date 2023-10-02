@@ -33,7 +33,7 @@ public class UsersManager {
         return beans;
     }
 
-    public synchronized void deleteUser( UserBean bean) throws IOException {
+    public synchronized void deleteUser(UserBean bean) throws IOException {
         bean.close();
         beans.remove(bean);
     }

@@ -2,6 +2,7 @@ package com.cc68.message;
 
 import com.cc68.Client;
 import com.cc68.beans.MessageBean;
+import com.cc68.manager.HeartbeatManger;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -41,9 +42,9 @@ public class HandleMessage {
         if ("200".equals(data.get("status"))){
             temp.put("status","true");
             //运行心跳管理器
-//            client.setHeartbeatManger(new HeartbeatManger(client.getConfig()));
-//            Thread heartbeatThread = new Thread(client.getHeartbeatManger());
-//            heartbeatThread.start();
+            client.setHeartbeatManger(new HeartbeatManger(client.getConfig()));
+            Thread heartbeatThread = new Thread(client.getHeartbeatManger());
+            heartbeatThread.start();
 
             client.getReceiveManager().setMain(Thread.currentThread());
             //运行接收器

@@ -22,8 +22,13 @@ import java.util.HashMap;
  *      普通消息等
  */
 public class HandleMessage {
+    private static HashMap<String,String> log;
+
     public static MessageBean handle(MessageBean messageBean, UserBean userBean, Server server) throws IOException {
-        return switch (messageBean.getType()) {
+        log = new HashMap<>();
+        log.put("type",messageBean.getType());
+        log.put("account",userBean.getAccount());
+        MessageBean bean = switch (messageBean.getType()) {
             case "login" -> login(messageBean, userBean, server);
             case "logon" -> logon(messageBean, userBean, server);
             case "changPwd" -> changPwd(messageBean, userBean, server);
@@ -31,10 +36,21 @@ public class HandleMessage {
             case "sideText" -> sideText(messageBean,userBean,server);
             default -> null;
         };
+        log.put("time",MessageUtil.getTime());
+
+        return bean;
+    }
+
+    public static HashMap<String,String> getLog(){
+        return log;
     }
 
     private static MessageBean sideText(MessageBean messageBean, UserBean userBean, Server server) throws IOException {
         HashMap<String, String> data = messageBean.getData();
+        log.put("originator",messageBean.getOriginator());
+        log.put("receiver",data.get("receiver"));
+        log.put("message",data.get("message"));
+
         //flag属性表示是否回复
         data.put("flag","false");
         data.put("originator",messageBean.getOriginator());
@@ -57,6 +73,17 @@ public class HandleMessage {
         if (temp != null){
             data[0] = "200";
             data[1] = "successful login";
+            //预先删除防止重复登录
+            UserBean oldBean = server.getUsersManager().getUser(userBean.getAccount());
+            if (oldBean!=null){
+                log.put("loginStatus","true");
+                try {
+                    server.getUsersManager().deleteUser(oldBean);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
             //向用户管理器添加数据
             server.getUsersManager().addUser(userBean);
             Socket socket = server.getReceiveManager().getAccept();
@@ -67,9 +94,11 @@ public class HandleMessage {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+            log.put("status","200");
         }else {
             data[0] = "400";
             data[1] = "failed login";
+            log.put("status","400");
         }
         //构建返回数据
         sqlSession.close();
@@ -85,12 +114,14 @@ public class HandleMessage {
         if (temp != null){
             data[0] = "400";
             data[1] = "账户已存在！";
+            log.put("status","400");
         }else {
             System.out.println(JSON.toJSONString(userBean));
             sqlSession.insert("user.logon",userBean);
             data[0] = "200";
             data[1] = "注册成功";
             sqlSession.commit();
+            log.put("status","200");
         }
         sqlSession.close();
         return MessageUtil.replyMessage(messageBean.getID(), "logon", data, server);
@@ -107,12 +138,14 @@ public class HandleMessage {
         if (cursor == null){
             data[0] = "400";
             data[1] = "账户不存在！";
+            log.put("status","400");
         }else {
             userBean.setPassword(messageBean.getData().get("pwdNew"));
             sqlSession.insert("user.changPwd",userBean);
             data[0] = "200";
             data[1] = "密码修改成功!";
             sqlSession.commit();
+            log.put("status","200");
         }
         sqlSession.close();
         return MessageUtil.replyMessage(messageBean.getID(),"logon",data,server);
