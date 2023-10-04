@@ -1,5 +1,6 @@
 package com.cc68.utils;
 
+import com.alibaba.fastjson2.JSON;
 import com.cc68.Server;
 import com.cc68.beans.MessageBean;
 import com.cc68.beans.MessageDatabaseBean;

@@ -65,7 +65,7 @@ public class Server {
         receiveManager = new ReceiveManager(this,config,"serverPort");
         heartbeatManger = new HeartbeatManger(config,usersManager);
         wrecker = new Wrecker(usersManager,config);
-        pool = new SocketPool(this,Integer.parseInt(config.getProperty("poolMax")),60);
+        pool = new SocketPool(this,Integer.parseInt(config.getProperty("poolMax")),Integer.parseInt(config.getProperty("timeout")));
 
         Thread heartThread = new Thread(heartbeatManger);
         heartThread.start();

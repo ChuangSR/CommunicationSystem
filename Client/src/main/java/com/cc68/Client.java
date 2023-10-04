@@ -142,7 +142,7 @@ public class Client {
 
     public void offline() throws IOException {
         receiveManager.close();
-        sendManager.close();;
+        sendManager.close();
         socket.close();
         status = false;
     }

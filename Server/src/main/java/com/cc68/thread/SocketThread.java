@@ -52,12 +52,12 @@ public class SocketThread implements Runnable {
     @Override
     public void run() {
         while (flag){
+            refresh();
             try {
                 String message = reader.readLine();
                 if (message == null){
                     continue;
                 }
-                refresh();
                 MessageBean bean = JSON.parseObject(message, MessageBean.class);
                 MessageBean replyBean = HandleMessage.handle(bean, userBean,server);
                 boolean flag = Boolean.parseBoolean(replyBean.getData().get("flag"));

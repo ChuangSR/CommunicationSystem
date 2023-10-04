@@ -1,5 +1,6 @@
 package com.cc68.thread;
 
+import com.alibaba.fastjson2.JSON;
 import com.cc68.Server;
 import com.cc68.beans.MessageBean;
 import com.cc68.beans.UserBean;
@@ -56,9 +57,12 @@ public class SocketPool implements Runnable{
         SocketThread oldThread = getThread(socketThread.getUserBean());
         if (oldThread!=null){
             oldThread.close();
+            delete(oldThread);
         }
         Thread thread = new Thread(socketThread);
         thread.start();
+
+
         if (pool.size() == MAX){
             long MAX = 0;
             int index = 0;
@@ -102,12 +106,17 @@ public class SocketPool implements Runnable{
      * @throws IOException
      */
     private void checkThread() throws IOException {
+        SocketThread temp =null;
         for (SocketThread thread:pool){
             long linkTime = thread.getLinkTime();
             long now = System.currentTimeMillis()/1000;
             if (now - linkTime >= timeout){
                 closeThread(thread);
+                temp = thread;
             }
+        }
+        if (temp!=null){
+            delete(temp);
         }
     }
 
@@ -119,7 +128,6 @@ public class SocketPool implements Runnable{
     private void closeThread(SocketThread thread) throws IOException {
         //获取bean对象
         UserBean userBean = thread.getUserBean();
-
         if (userBean == null){
             thread.close();
             delete(thread);
@@ -129,7 +137,7 @@ public class SocketPool implements Runnable{
         String[] data = new String[1];
         data[0] = MessageUtil.getTime();
         //构造消息
-        MessageBean bean = MessageUtil.buildMessage("offline",data, server.getConfig().getProperty("account"));
+        MessageBean bean = MessageUtil.buildMessage("offline",data, server.getConfig().getProperty("serverName"));
 
         //发送消息
         SendManager sendManager = userBean.getSendManager();
