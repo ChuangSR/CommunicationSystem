@@ -1,6 +1,5 @@
 package com.cc68.utils;
 
-import com.alibaba.fastjson2.JSON;
 import com.cc68.Server;
 import com.cc68.beans.MessageBean;
 import com.cc68.beans.MessageDatabaseBean;
@@ -36,6 +35,7 @@ public class MessageUtil {
             case "logon" -> logon(temp, data);
             case "changPwd" -> changPwd(temp, data);
             case "list" -> list(temp,data);
+            case "online" -> online(temp,data);
         }
 
 
@@ -47,6 +47,9 @@ public class MessageUtil {
         return bean;
     }
 
+    private static void online(HashMap<String, String> temp, String[] data) {
+        temp.put("status",data[0]);
+    }
 
 
     //获取消息的ID

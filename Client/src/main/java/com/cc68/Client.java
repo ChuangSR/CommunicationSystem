@@ -1,7 +1,6 @@
 package com.cc68;
 
 
-import com.alibaba.fastjson2.JSON;
 import com.cc68.beans.MessageBean;
 import com.cc68.manager.ConsoleMessageManger;
 import com.cc68.manager.HeartbeatManger;
@@ -123,7 +122,8 @@ public class Client {
         ConsoleMessageManger.send(data);
     }
 
-    public void online() throws IOException {
+    public void online(MessageBean old) throws IOException {
+        status = true;
         this.socket = new Socket(config.getProperty("ServerHost"),
                 Integer.parseInt(config.getProperty("ServerPort")));
         //创建发送管理器
@@ -131,13 +131,18 @@ public class Client {
         //构建接收器
         receiveManager = new ReceiveManager(this);
 
-        Thread receiveThread = new Thread(receiveManager);
-        receiveThread.start();
-
         String[] data = {MessageUtil.getTime()};
         MessageBean bean = MessageUtil.buildMessage("online", data, account);
 
         sendManager.send(bean);
+
+        MessageBean replyBean = receiveManager.getReceiveFrontLogin(bean.getID());
+        sendManager.send(old);
+//        HashMap<String, String> handle = HandleMessage.handle(replyBean,this);
+
+        Thread receiveThread = new Thread(receiveManager);
+        receiveThread.start();
+
     }
 
     public void offline() throws IOException {
@@ -175,6 +180,7 @@ public class Client {
     public void close() throws IOException {
         sendManager.close();
         receiveManager.close();
+        socket.close();
         if (heartbeatManger != null){
             heartbeatManger.close();
         }

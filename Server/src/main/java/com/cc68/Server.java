@@ -1,13 +1,11 @@
 package com.cc68;
 
-import com.alibaba.fastjson2.JSON;
 import com.cc68.beans.MessageBean;
 import com.cc68.beans.UserBean;
 import com.cc68.manager.*;
 import com.cc68.message.HandleMessage;
 import com.cc68.thread.SocketPool;
 import com.cc68.thread.SocketThread;
-import com.cc68.utils.MessageUtil;
 import org.apache.ibatis.io.Resources;
 
 import java.io.IOException;
@@ -80,11 +78,15 @@ public class Server {
     public void start() throws IOException {
         while (flage){
             MessageBean messageBean = receiveManager.listen();
+            UserBean userBean;
+
             if ("online".equals(messageBean.getType())){
+                userBean = usersManager.getUser(messageBean.getOriginator());
+                MessageBean replyBean = HandleMessage.handle(messageBean,userBean, this);
+                userBean.getSendManager().send(replyBean);
                 continue;
             }
 
-            UserBean userBean;
             //判读是否为登录事件，改事件较为特殊
             if ("login".equals(messageBean.getType()) || "logon".equals(messageBean.getType())
             ||"changPwd".equals(messageBean.getType())){

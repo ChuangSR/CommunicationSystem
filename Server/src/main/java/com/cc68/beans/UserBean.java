@@ -35,6 +35,7 @@ public class UserBean {
 
     public void setSendManager(SendManager sendManager) {
         this.sendManager = sendManager;
+        refresh();
     }
 
     public String getAccount() {

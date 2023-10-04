@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSON;
 import com.cc68.Server;
 import com.cc68.beans.MessageBean;
 import com.cc68.beans.UserBean;
+import com.cc68.manager.SendManager;
 import com.cc68.manager.UsersManager;
 import com.cc68.thread.SocketThread;
 import com.cc68.utils.MessageUtil;
@@ -34,11 +35,28 @@ public class HandleMessage {
             case "changPwd" -> changPwd(messageBean, userBean, server);
             case "list" -> list(messageBean,userBean,server);
             case "sideText" -> sideText(messageBean,userBean,server);
+            case "online" -> online(messageBean,userBean,server);
             default -> null;
         };
         log.put("time",MessageUtil.getTime());
 
         return bean;
+    }
+
+    private static MessageBean online(MessageBean messageBean, UserBean userBean, Server server) throws IOException {
+        Socket socket = server.getReceiveManager().getAccept();
+        userBean.setSendManager(new SendManager(socket));
+        SocketThread thread;
+        String[] data = new String[1];
+        try {
+            thread = new SocketThread(server, socket, userBean);
+            server.getPool().add(thread);
+            data[0] = "true";
+        } catch (IOException e) {
+            data[0] = "false";
+            throw new RuntimeException(e);
+        }
+        return MessageUtil.replyMessage(messageBean.getID(), "online", data, server);
     }
 
     public static HashMap<String,String> getLog(){

@@ -5,8 +5,6 @@ import com.cc68.Client;
 import com.cc68.beans.MessageBean;
 import com.cc68.message.HandleMessage;
 import com.cc68.utils.MessageUtil;
-import com.cc68.utils.SqlUtil;
-import org.apache.ibatis.session.SqlSession;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -42,7 +40,6 @@ public class ReceiveManager implements Runnable{
             while (flag&&(message = reader.readLine())!=null){
                 //存储数据到数据库
                 MessageBean bean = JSON.parseObject(message, MessageBean.class);
-                System.out.println(message);
                 MessageUtil.saveMessage(bean, client.getConfig().get("account").toString());
                 //向控制台发送数据
                 HashMap<String, String> data = HandleMessage.handle(bean, client);

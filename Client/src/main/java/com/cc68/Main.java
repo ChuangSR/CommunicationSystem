@@ -8,7 +8,6 @@ public class Main {
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        //关闭dos回显
         client = new Client();
 
         while (true){
@@ -44,7 +43,6 @@ public class Main {
         if (status){
             menu();
         }
-        return;
     }
 
     public static void logon() throws IOException {
